@@ -24,7 +24,7 @@ export default class Ship {
 		return this.#numHits >= this.#length;
 	}
 
-	hitShip() {
+	hit() {
 		this.#numHits++;
 		this.#isSunk = this.#checkSunk();
 	}
