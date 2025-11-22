@@ -1,0 +1,60 @@
+{
+	"name": "package",
+	"version": "1.0.0",
+	"description": "A Webpack project with Tailwind CSS and PostCSS",
+	"main": "index.js",
+	"scripts": {
+		"test": "npx eslint src/ && jest",
+		"prettify": "npx prettier . --write",
+		"start": "webpack serve --open --config webpack.dev.js",
+		"build": "webpack --config webpack.prod.js",
+		"build:dev": "webpack --config webpack.dev.js",
+		"predeploy": "npm run build",
+		"deploy": "git add -f dist && git commit -m 'Deployment commit' && git subtree push --prefix dist origin gh-pages",
+		"prepare": "husky install"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/StilettoDagger/webpack-tailwind-template.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/StilettoDagger/webpack-tailwind-template/issues"
+	},
+	"homepage": "https://github.com/StilettoDagger/webpack-tailwind-template",
+	"devDependencies": {
+		"@eslint/js": "^9.39.1",
+		"@eslint/json": "^0.14.0",
+		"@iconify/json": "^2.2.409",
+		"@iconify/tailwind4": "^1.1.0",
+		"@tailwindcss/postcss": "^4.1.17",
+		"@types/jest": "^30.0.0",
+		"autoprefixer": "^10.4.22",
+		"css-loader": "^7.1.2",
+		"eslint": "^9.39.1",
+		"eslint-config-prettier": "^10.1.8",
+		"globals": "^16.5.0",
+		"html-webpack-plugin": "^5.6.5",
+		"husky": "^9.1.7",
+		"jest": "^30.2.0",
+		"lint-staged": "^16.2.7",
+		"postcss": "^8.5.6",
+		"postcss-loader": "^8.2.0",
+		"postcss-nested": "^7.0.2",
+		"prettier": "3.6.2",
+		"prettier-plugin-tailwindcss": "^0.7.1",
+		"style-loader": "^4.0.0",
+		"tailwind": "^4.0.0",
+		"tailwindcss": "^4.1.17",
+		"webpack": "^5.103.0",
+		"webpack-cli": "^6.0.1",
+		"webpack-dev-server": "^5.2.2",
+		"webpack-merge": "^6.0.1"
+	},
+	"lint-staged": {
+		"*.js": "eslint --cache --fix",
+		"*.{js,css,md,json,html}": "prettier --write"
+	}
+}
