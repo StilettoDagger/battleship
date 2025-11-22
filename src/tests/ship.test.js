@@ -5,8 +5,9 @@ describe("ship module tests.", () => {
 	beforeAll(() => {
 		ship = new Ship(5);
 	});
-	test("ship module exists", () => {
+	test("Ship class should exist and be defined", () => {
 		expect(Ship).toBeDefined();
+		expect(Ship).toBeInstanceOf(Object);
 	});
 	test("ship module should include length property with correct value", () => {
 		expect(ship.length).toBeDefined();
