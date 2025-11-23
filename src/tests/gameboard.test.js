@@ -288,8 +288,8 @@ describe("game board tests", () => {
 		expect(gameBoard.isGameOver).toBe(true);
 	});
 	test("GameBoard should include a method to clear the ships", () => {
-		expect(gameBoard.clearBoard).toBeDefined();
-		gameBoard.clearBoard();
+		expect(gameBoard.resetBoard).toBeDefined();
+		gameBoard.resetBoard();
 		expect(gameBoard.board).toStrictEqual([
 			[null, null, null, null, null, null, null, null, null, null],
 			[null, null, null, null, null, null, null, null, null, null],
@@ -303,6 +303,8 @@ describe("game board tests", () => {
 			[null, null, null, null, null, null, null, null, null, null],
 		]);
 		expect(gameBoard.ships).toHaveLength(0);
+		expect(gameBoard.missedAttacks).toBe(0);
+		expect(gameBoard.isGameOver).toBe(false);
 	});
 	test("GameBoard should have a method to randomly initialize the board with ships", () => {
 		expect(gameBoard.randomizeShips).toBeDefined();

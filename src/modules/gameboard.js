@@ -110,7 +110,7 @@ export default class GameBoard {
 		}
 	}
 
-	clearBoard() {
+	resetBoard() {
 		this.#board = [];
 		this.#ships = [];
 		this.#gameOver = false;
