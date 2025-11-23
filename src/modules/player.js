@@ -9,7 +9,7 @@ export class Player {
 		this.gameBoard = new GameBoard(this.#boardSize);
 		this.#initializeAttacks();
 	}
-	makeAttack(player, x, y) {
+	attack(player, x, y) {
 		if (this.attacks[y][x] !== "unknown") {
 			return null;
 		}

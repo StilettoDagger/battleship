@@ -279,25 +279,25 @@ describe("Player tests", () => {
 			],
 		]);
 	});
-	test("Players should have a makeAttack method", () => {
-		expect(realPlayer.makeAttack).toBeDefined();
-		expect(realPlayer.makeAttack).toBeInstanceOf(Function);
-		expect(compPlayer.makeAttack).toBeDefined();
-		expect(compPlayer.makeAttack).toBeInstanceOf(Function);
+	test("Players should have a attack method", () => {
+		expect(realPlayer.attack).toBeDefined();
+		expect(realPlayer.attack).toBeInstanceOf(Function);
+		expect(compPlayer.attack).toBeDefined();
+		expect(compPlayer.attack).toBeInstanceOf(Function);
 	});
-	test("makeAttack method should return an object of the coordinate that was attacked that may or may not include a hit ship", () => {
-		const att1 = realPlayer.makeAttack(compPlayer, 3, 3);
+	test("attack method should return an object of the coordinate that was attacked that may or may not include a hit ship", () => {
+		const att1 = realPlayer.attack(compPlayer, 3, 3);
 		expect(att1.ship).toEqual(expect.any(Ship));
 
-		const att2 = realPlayer.makeAttack(compPlayer, 0, 0);
+		const att2 = realPlayer.attack(compPlayer, 0, 0);
 		expect(att2.ship).toBeNull();
 
-		const att3 = compPlayer.makeAttack(realPlayer, 3, 0);
+		const att3 = compPlayer.attack(realPlayer, 3, 0);
 		expect(att3.ship).toEqual(expect.any(Ship));
 	});
-	test("makeAttack method should sink an opponent's ship when the ship is hit enough number of time", () => {
-		realPlayer.makeAttack(compPlayer, 4, 3);
-		const att = realPlayer.makeAttack(compPlayer, 5, 3);
+	test("attack method should sink an opponent's ship when the ship is hit enough number of time", () => {
+		realPlayer.attack(compPlayer, 4, 3);
+		const att = realPlayer.attack(compPlayer, 5, 3);
 
 		expect(att.ship).toEqual(expect.any(Ship));
 		expect(att.ship.isSunk).toBe(true);
@@ -549,11 +549,11 @@ describe("Player tests", () => {
 			],
 		]);
 	});
-	test("makeAttack should return null if the player has previously attacked the previous coordinate", () => {
-		const att = realPlayer.makeAttack(compPlayer, 3, 3);
+	test("attack should return null if the player has previously attacked the previous coordinate", () => {
+		const att = realPlayer.attack(compPlayer, 3, 3);
 		expect(att).toBeNull();
 
-		const att2 = compPlayer.makeAttack(realPlayer, 3, 0);
+		const att2 = compPlayer.attack(realPlayer, 3, 0);
 		expect(att2).toBeNull();
 	});
 });
