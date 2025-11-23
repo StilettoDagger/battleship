@@ -2,21 +2,21 @@ import Ship from "./ship.js";
 
 export default class GameBoard {
 	#board;
-	#size;
+	#boardSize;
 	#ships;
 	#gameOver;
-	constructor(size) {
+	constructor(boardSize) {
 		this.#board = [];
-		this.#size = size;
+		this.#boardSize = boardSize;
 		this.#ships = [];
 		this.#gameOver = false;
 		this.initializeBoard();
 	}
 
 	initializeBoard() {
-		for (let i = 0; i < this.#size; i++) {
+		for (let i = 0; i < this.#boardSize; i++) {
 			const row = [];
-			for (let j = 0; j < this.#size; j++) {
+			for (let j = 0; j < this.#boardSize; j++) {
 				row.push(null);
 			}
 			this.#board.push(row);
@@ -64,7 +64,7 @@ export default class GameBoard {
 	}
 
 	#isWithinBoard(x, y) {
-		return x < this.#size && x >= 0 && y < this.#size && y >= 0;
+		return x < this.#boardSize && x >= 0 && y < this.#boardSize && y >= 0;
 	}
 
 	#checkValidSquare(x, y) {
@@ -129,7 +129,7 @@ export default class GameBoard {
 	}
 
 	get size() {
-		return this.#size;
+		return this.#boardSize;
 	}
 
 	get board() {
