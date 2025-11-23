@@ -6,9 +6,9 @@ describe("Player tests", () => {
 	let realPlayer;
 	let compPlayer;
 	beforeAll(() => {
-		realPlayer = new Player("player");
+		realPlayer = new Player("player", 10);
 		realPlayer.gameBoard.placeShip(4, "vertical", 3, 0);
-		compPlayer = new ComputerPlayer();
+		compPlayer = new ComputerPlayer(10);
 		compPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
 	});
 	test("Player class should exist", () => {

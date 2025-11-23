@@ -1,9 +1,9 @@
 import GameBoard from "./gameboard.js";
 
 export class Player {
-	constructor(name) {
+	constructor(name, boardSize) {
 		this.name = name;
-		this.gameBoard = new GameBoard(10);
+		this.gameBoard = new GameBoard(boardSize);
 	}
 	makeAttack(player, x, y) {
 		const playerBoard = player.gameBoard;
@@ -12,8 +12,7 @@ export class Player {
 }
 
 export class ComputerPlayer extends Player {
-	constructor() {
-		super();
-		this.name = "computer";
+	constructor(boardSize) {
+		super("computer", boardSize);
 	}
 }
