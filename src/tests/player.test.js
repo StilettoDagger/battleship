@@ -1,0 +1,55 @@
+import GameBoard from "../modules/gameboard.js";
+import { Player, ComputerPlayer } from "../modules/player.js";
+import Ship from "../modules/ship.js";
+
+describe("Player tests", () => {
+	let realPlayer;
+	let compPlayer;
+	beforeAll(() => {
+		realPlayer = new Player("player");
+		realPlayer.gameBoard.placeShip(4, "vertical", 3, 0);
+		compPlayer = new ComputerPlayer();
+		compPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
+	});
+	test("Player class should exist", () => {
+		expect(Player).toBeDefined();
+		expect(Player).toBeInstanceOf(Object);
+		expect(realPlayer.name).toBe("player");
+	});
+	test("ComputerPlayer class should exist", () => {
+		expect(ComputerPlayer).toBeDefined();
+		expect(Object.prototype.isPrototypeOf.call(Player, ComputerPlayer)).toBe(
+			true
+		);
+		expect(compPlayer.name).toBe("computer");
+	});
+	test("Each player should contain their own gameboard", () => {
+		expect(realPlayer.gameBoard).toBeDefined();
+		expect(realPlayer.gameBoard).toEqual(expect.any(GameBoard));
+		expect(compPlayer.gameBoard).toBeDefined();
+		expect(compPlayer.gameBoard).toEqual(expect.any(GameBoard));
+
+		expect(realPlayer.gameBoard).not.toBe(compPlayer.gameBoard);
+	});
+	test("Players should have a makeAttack method", () => {
+		expect(realPlayer.makeAttack).toBeDefined();
+		expect(realPlayer.makeAttack).toBeInstanceOf(Function);
+		expect(compPlayer.makeAttack).toBeDefined();
+		expect(compPlayer.makeAttack).toBeInstanceOf(Function);
+	});
+	test("makeAttack method should return an object of the coordinate that was attacked that may or may not include a hit ship", () => {
+		const att1 = realPlayer.makeAttack(compPlayer, 3, 3);
+		expect(att1.ship).toEqual(expect.any(Ship));
+
+		const att2 = realPlayer.makeAttack(compPlayer, 0, 0);
+		expect(att2.ship).toBeNull();
+	});
+	test("makeAttack method should sink an opponent's ship when the ship is hit enough number of time", () => {
+		realPlayer.makeAttack(compPlayer, 4, 3);
+		const att = realPlayer.makeAttack(compPlayer, 5, 3);
+
+		expect(att.ship).toEqual(expect.any(Ship));
+		expect(att.ship.isSunk).toBe(true);
+		expect(compPlayer.gameBoard.isGameOver).toBe(true);
+	});
+});
