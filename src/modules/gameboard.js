@@ -94,7 +94,7 @@ export default class GameBoard {
 	receiveAttack(x, y) {
 		let ship = null;
 		if (!this.#isEmptySquare(x, y)) {
-			ship = this.#board[y][x];
+			ship = this.getSquare(x, y);
 			ship.hit();
 			this.#checkSunkShips();
 		} else {
@@ -127,6 +127,10 @@ export default class GameBoard {
 			this.placeShip(shipSize, orientation, x, y);
 		}
 		return true;
+	}
+
+	getSquare(x, y) {
+		return this.#board[y][x];
 	}
 
 	get size() {
