@@ -569,4 +569,8 @@ describe("Player tests", () => {
 		expect(realPlayer.missedAttacks).toBeDefined();
 		expect(realPlayer.missedAttacks).toBe(1);
 	});
+	test("Player should have a stat for ships destroyed", () => {
+		expect(realPlayer.shipsDestroyed).toBeDefined();
+		expect(realPlayer.shipsDestroyed).toBe(1);
+	});
 });

@@ -3,11 +3,13 @@ import GameBoard from "./gameboard.js";
 export class Player {
 	#boardSize;
 	#missedAttacks;
+	#shipsDestroyed;
 	constructor(name, boardSize) {
 		this.name = name;
 		this.#boardSize = boardSize;
 		this.attacks = [];
 		this.#missedAttacks = 0;
+		this.#shipsDestroyed = 0;
 		this.gameBoard = new GameBoard(this.#boardSize);
 		this.#initializeAttacks();
 	}
@@ -21,7 +23,10 @@ export class Player {
 		if (res.ship === null) {
 			this.#missedAttacks++;
 		}
-		return playerBoard.receiveAttack(x, y);
+		if (res.ship && res.ship.isSunk) {
+			this.#shipsDestroyed++;
+		}
+		return res;
 	}
 
 	checkValidAttackSquare(x, y) {
@@ -46,6 +51,10 @@ export class Player {
 
 	get missedAttacks() {
 		return this.#missedAttacks;
+	}
+
+	get shipsDestroyed() {
+		return this.#shipsDestroyed;
 	}
 }
 
