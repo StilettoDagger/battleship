@@ -11,7 +11,8 @@
 		"build:dev": "webpack --config webpack.dev.js",
 		"predeploy": "npm run build",
 		"deploy": "git add -f dist && git commit -m 'Deployment commit' && git subtree push --prefix dist origin gh-pages",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"test-watch": "jest --watch"
 	},
 	"repository": {
 		"type": "git",
