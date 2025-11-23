@@ -10,12 +10,18 @@ export class Player {
 		this.#initializeAttacks();
 	}
 	attack(player, x, y) {
-		if (this.attacks[y][x] !== "unknown") {
+		if (
+			this.attacks[y][x] !== "unknown" ||
+			x < 0 ||
+			x >= this.#boardSize ||
+			y < 0 ||
+			y >= this.#boardSize
+		) {
 			return null;
 		}
 		const playerBoard = player.gameBoard;
 		const res = playerBoard.receiveAttack(x, y);
-		this.attacks[y][x] = res.ship ? "hit" : "noHit";
+		this.attacks[y][x] = res.ship !== null ? "hit" : "noHit";
 		return playerBoard.receiveAttack(x, y);
 	}
 
