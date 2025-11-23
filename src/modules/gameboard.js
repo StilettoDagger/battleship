@@ -3,9 +3,15 @@ import Ship from "./ship.js";
 export default class GameBoard {
 	#board;
 	#size;
+	#missedAttacks;
+	#ships;
+	#gameOver;
 	constructor(size) {
 		this.#board = [];
 		this.#size = size;
+		this.#ships = [];
+		this.#missedAttacks = 0;
+		this.#gameOver = false;
 		this.initializeBoard();
 	}
 
@@ -20,12 +26,17 @@ export default class GameBoard {
 	}
 
 	placeShip(shipSize, orientation, x, y) {
+		let canPlace = false;
 		const ship = new Ship(shipSize);
 		if (orientation === "vertical") {
-			return this.#arrangeShipVertical(ship, x, y);
+			canPlace = this.#arrangeShipVertical(ship, x, y);
 		} else if (orientation === "horizontal") {
-			return this.#arrangeShipHorizontal(ship, x, y);
+			canPlace = this.#arrangeShipHorizontal(ship, x, y);
 		}
+		if (canPlace) {
+			this.#ships.push(ship);
+		}
+		return canPlace;
 	}
 
 	#arrangeShipVertical(ship, x, y) {
@@ -80,11 +91,46 @@ export default class GameBoard {
 		return true;
 	}
 
+	receiveAttack(x, y) {
+		let ship = null;
+		if (!this.#isEmptySquare(x, y)) {
+			ship = this.#board[y][x];
+			ship.hit();
+			this.#checkSunkShips();
+		} else {
+			this.#missedAttacks++;
+		}
+		return { x, y, ship };
+	}
+
+	#checkSunkShips() {
+		const sunkShips = this.sunkShips;
+		if (sunkShips.length === this.#ships.length) {
+			this.#gameOver = true;
+		}
+	}
+
 	get size() {
 		return this.#size;
 	}
 
 	get board() {
 		return this.#board;
+	}
+
+	get missedAttacks() {
+		return this.#missedAttacks;
+	}
+
+	get ships() {
+		return this.#ships;
+	}
+
+	get sunkShips() {
+		return this.#ships.filter((ship) => ship.isSunk);
+	}
+
+	get isGameOver() {
+		return this.#gameOver;
 	}
 }

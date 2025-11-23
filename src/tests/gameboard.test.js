@@ -239,4 +239,52 @@ describe("game board tests", () => {
 			[null, null, null, null, null, null, null, null, null, null],
 		]);
 	});
+	test("GameBoard should have a receiveAttack method", () => {
+		expect(gameBoard.receiveAttack).toBeDefined();
+		expect(gameBoard.receiveAttack).toBeInstanceOf(Function);
+	});
+	test("receiveAttack method should hit a ship when given coordinates with a ship on it", () => {
+		const res = gameBoard.receiveAttack(1, 0);
+		const res1 = gameBoard.receiveAttack(1, 1);
+		expect(res.ship).toEqual(expect.any(Ship));
+		expect(res.ship).toEqual(res1.ship);
+		expect(res.ship.numHits).toEqual(2);
+	});
+	test("receiveAttack method should return an object including coordinates if an empty square is hit", () => {
+		const res = gameBoard.receiveAttack(0, 0);
+		expect(res).toBeInstanceOf(Object);
+		expect(res).toHaveProperty("x");
+		expect(res).toHaveProperty("y");
+		expect(res.ship).toBeNull();
+	});
+	test("GameBoard should have a counter for missed attacks", () => {
+		expect(gameBoard).toHaveProperty("missedAttacks");
+	});
+	test("missedAttacks counter should increment by 1 when missing attacks", () => {
+		gameBoard.receiveAttack(2, 0);
+		expect(gameBoard.missedAttacks).toBe(2);
+	});
+	test("GameBoard should keep track of the current ships on board", () => {
+		expect(gameBoard).toHaveProperty("ships");
+		expect(gameBoard.ships).toHaveLength(2);
+	});
+	test("GameBoard should include a method to get the number of sunk ships", () => {
+		expect(gameBoard).toHaveProperty("sunkShips");
+		expect(gameBoard.sunkShips).toHaveLength(0);
+	});
+	test("GameBoard should include a game over flag property", () => {
+		expect(gameBoard).toHaveProperty("isGameOver");
+		expect(gameBoard.isGameOver).toBe(false);
+	});
+	test("game should be over when all ships are sunk", () => {
+		const res = gameBoard.receiveAttack(1, 2);
+		expect(res.ship.isSunk).toBe(true);
+		gameBoard.receiveAttack(3, 3);
+		gameBoard.receiveAttack(4, 3);
+		gameBoard.receiveAttack(5, 3);
+		const res2 = gameBoard.receiveAttack(6, 3);
+
+		expect(res2.ship.isSunk).toBe(true);
+		expect(gameBoard.isGameOver).toBe(true);
+	});
 });
