@@ -110,6 +110,23 @@ export default class GameBoard {
 		}
 	}
 
+	clearBoard() {
+		this.#board = [];
+		this.#ships = [];
+		this.initializeBoard();
+	}
+
+	randomizeShips(num) {
+		while (this.#ships.length < num) {
+			const shipSize = Math.floor(Math.random() * 4 + 1);
+			const orientation = Math.random() > 0.5 ? "horizontal" : "vertical";
+			const x = Math.floor(Math.random() * 10);
+			const y = Math.floor(Math.random() * 10);
+			this.placeShip(shipSize, orientation, x, y);
+		}
+		return true;
+	}
+
 	get size() {
 		return this.#size;
 	}

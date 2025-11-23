@@ -287,4 +287,29 @@ describe("game board tests", () => {
 		expect(res2.ship.isSunk).toBe(true);
 		expect(gameBoard.isGameOver).toBe(true);
 	});
+	test("GameBoard should include a method to clear the ships", () => {
+		expect(gameBoard.clearBoard).toBeDefined();
+		gameBoard.clearBoard();
+		expect(gameBoard.board).toStrictEqual([
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+			[null, null, null, null, null, null, null, null, null, null],
+		]);
+		expect(gameBoard.ships).toHaveLength(0);
+	});
+	test("GameBoard should have a method to randomly initialize the board with ships", () => {
+		expect(gameBoard.randomizeShips).toBeDefined();
+		expect(gameBoard.randomizeShips).toBeInstanceOf(Function);
+
+		const res = gameBoard.randomizeShips(5);
+		expect(res).toBe(true);
+		expect(gameBoard.ships).toHaveLength(5);
+	});
 });
