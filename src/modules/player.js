@@ -12,13 +12,7 @@ export class Player {
 		this.#initializeAttacks();
 	}
 	attack(player, x, y) {
-		if (
-			x < 0 ||
-			x >= this.#boardSize ||
-			y < 0 ||
-			y >= this.#boardSize ||
-			this.attacks[y][x] !== "unknown"
-		) {
+		if (!this.checkValidAttackSquare(x, y)) {
 			return null;
 		}
 		const playerBoard = player.gameBoard;
@@ -28,6 +22,16 @@ export class Player {
 			this.#missedAttacks++;
 		}
 		return playerBoard.receiveAttack(x, y);
+	}
+
+	checkValidAttackSquare(x, y) {
+		return (
+			x >= 0 &&
+			x < this.#boardSize &&
+			y >= 0 &&
+			y < this.#boardSize &&
+			this.attacks[y][x] === "unknown"
+		);
 	}
 
 	#initializeAttacks() {

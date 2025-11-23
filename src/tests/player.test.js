@@ -549,6 +549,12 @@ describe("Player tests", () => {
 			],
 		]);
 	});
+	test("Player should include a method to check if a square can be attacked", () => {
+		expect(realPlayer.checkValidAttackSquare).toBeDefined();
+		expect(realPlayer.checkValidAttackSquare).toBeInstanceOf(Function);
+		expect(realPlayer.checkValidAttackSquare(3, 3)).toBe(false);
+		expect(realPlayer.checkValidAttackSquare(10, 10)).toBe(false);
+	});
 	test("attack should return null if the player has previously attacked the previous coordinate or the coordinate is invalid", () => {
 		const att = realPlayer.attack(compPlayer, 3, 3);
 		expect(att).toBeNull();
