@@ -3,14 +3,12 @@ import Ship from "./ship.js";
 export default class GameBoard {
 	#board;
 	#size;
-	#missedAttacks;
 	#ships;
 	#gameOver;
 	constructor(size) {
 		this.#board = [];
 		this.#size = size;
 		this.#ships = [];
-		this.#missedAttacks = 0;
 		this.#gameOver = false;
 		this.initializeBoard();
 	}
@@ -97,8 +95,6 @@ export default class GameBoard {
 			ship = this.getSquare(x, y);
 			ship.hit();
 			this.#checkSunkShips();
-		} else {
-			this.#missedAttacks++;
 		}
 		return { x, y, ship };
 	}
@@ -114,7 +110,6 @@ export default class GameBoard {
 		this.#board = [];
 		this.#ships = [];
 		this.#gameOver = false;
-		this.#missedAttacks = 0;
 		this.initializeBoard();
 	}
 
@@ -139,10 +134,6 @@ export default class GameBoard {
 
 	get board() {
 		return this.#board;
-	}
-
-	get missedAttacks() {
-		return this.#missedAttacks;
 	}
 
 	get ships() {

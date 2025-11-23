@@ -6,8 +6,8 @@ export class Player {
 	constructor(name, boardSize) {
 		this.name = name;
 		this.#boardSize = boardSize;
-		this.#missedAttacks = 0;
 		this.attacks = [];
+		this.#missedAttacks = 0;
 		this.gameBoard = new GameBoard(this.#boardSize);
 		this.#initializeAttacks();
 	}

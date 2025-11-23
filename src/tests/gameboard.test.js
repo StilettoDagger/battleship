@@ -257,13 +257,6 @@ describe("game board tests", () => {
 		expect(res).toHaveProperty("y");
 		expect(res.ship).toBeNull();
 	});
-	test("GameBoard should have a counter for missed attacks", () => {
-		expect(gameBoard).toHaveProperty("missedAttacks");
-	});
-	test("missedAttacks counter should increment by 1 when missing attacks", () => {
-		gameBoard.receiveAttack(2, 0);
-		expect(gameBoard.missedAttacks).toBe(2);
-	});
 	test("GameBoard should keep track of the current ships on board", () => {
 		expect(gameBoard).toHaveProperty("ships");
 		expect(gameBoard.ships).toHaveLength(2);
@@ -303,7 +296,6 @@ describe("game board tests", () => {
 			[null, null, null, null, null, null, null, null, null, null],
 		]);
 		expect(gameBoard.ships).toHaveLength(0);
-		expect(gameBoard.missedAttacks).toBe(0);
 		expect(gameBoard.isGameOver).toBe(false);
 	});
 	test("GameBoard should have a method to randomly initialize the board with ships", () => {
