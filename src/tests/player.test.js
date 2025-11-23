@@ -549,4 +549,11 @@ describe("Player tests", () => {
 			],
 		]);
 	});
+	test("makeAttack should return null if the player has previously attacked the previous coordinate", () => {
+		const att = realPlayer.makeAttack(compPlayer, 3, 3);
+		expect(att).toBeNull();
+
+		const att2 = compPlayer.makeAttack(realPlayer, 3, 0);
+		expect(att2).toBeNull();
+	});
 });

@@ -10,6 +10,9 @@ export class Player {
 		this.#initializeAttacks();
 	}
 	makeAttack(player, x, y) {
+		if (this.attacks[y][x] !== "unknown") {
+			return null;
+		}
 		const playerBoard = player.gameBoard;
 		const res = playerBoard.receiveAttack(x, y);
 		this.attacks[y][x] = res.ship ? "hit" : "noHit";
