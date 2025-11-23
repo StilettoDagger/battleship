@@ -113,6 +113,8 @@ export default class GameBoard {
 	clearBoard() {
 		this.#board = [];
 		this.#ships = [];
+		this.#gameOver = false;
+		this.#missedAttacks = 0;
 		this.initializeBoard();
 	}
 
