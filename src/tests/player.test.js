@@ -549,11 +549,18 @@ describe("Player tests", () => {
 			],
 		]);
 	});
-	test("attack should return null if the player has previously attacked the previous coordinate", () => {
+	test("attack should return null if the player has previously attacked the previous coordinate or the coordinate is invalid", () => {
 		const att = realPlayer.attack(compPlayer, 3, 3);
 		expect(att).toBeNull();
 
 		const att2 = compPlayer.attack(realPlayer, 3, 0);
 		expect(att2).toBeNull();
+
+		const att3 = realPlayer.attack(compPlayer, 10, 10);
+		expect(att3).toBeNull();
+	});
+	test("Player should have an attribute for missed attack", () => {
+		expect(realPlayer.missedAttacks).toBeDefined();
+		expect(realPlayer.missedAttacks).toBe(1);
 	});
 });

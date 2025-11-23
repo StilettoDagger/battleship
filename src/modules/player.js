@@ -2,26 +2,31 @@ import GameBoard from "./gameboard.js";
 
 export class Player {
 	#boardSize;
+	#missedAttacks;
 	constructor(name, boardSize) {
 		this.name = name;
 		this.#boardSize = boardSize;
+		this.#missedAttacks = 0;
 		this.attacks = [];
 		this.gameBoard = new GameBoard(this.#boardSize);
 		this.#initializeAttacks();
 	}
 	attack(player, x, y) {
 		if (
-			this.attacks[y][x] !== "unknown" ||
 			x < 0 ||
 			x >= this.#boardSize ||
 			y < 0 ||
-			y >= this.#boardSize
+			y >= this.#boardSize ||
+			this.attacks[y][x] !== "unknown"
 		) {
 			return null;
 		}
 		const playerBoard = player.gameBoard;
 		const res = playerBoard.receiveAttack(x, y);
-		this.attacks[y][x] = res.ship !== null ? "hit" : "noHit";
+		this.attacks[y][x] = res.ship ? "hit" : "noHit";
+		if (res.ship === null) {
+			this.#missedAttacks++;
+		}
 		return playerBoard.receiveAttack(x, y);
 	}
 
@@ -33,6 +38,10 @@ export class Player {
 			}
 			this.attacks.push(row);
 		}
+	}
+
+	get missedAttacks() {
+		return this.#missedAttacks;
 	}
 }
 
