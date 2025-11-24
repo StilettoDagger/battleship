@@ -60,7 +60,7 @@
 	"lint-staged": {
 		"*.js": [
 			"eslint --cache --fix",
-			"jest --bail --findRelatedTests"
+			"jest --bail --findRelatedTests --passWithNoTests"
 		],
 		"*.{js,css,md,json,html}": "prettier --write"
 	}

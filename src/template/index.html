@@ -1,11 +1,105 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
-</head>
-<body>
-    <h1>Hello World</h1>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Battleship</title>
+	</head>
+	<body class="bg-radial from-blue-300 from-40% to-blue-400 to-120% font-inter">
+		<div class="flex h-screen flex-col" id="app">
+			<h1 class="mt-8 text-center font-alumni text-8xl font-bold"
+				>Battleship</h1
+			>
+			<div
+				class="mx-auto mt-44 flex flex-col text-2xl font-bold text-gray-100"
+				id="main-menu">
+				<form
+					class="flex flex-col gap-4 rounded-3xl border-2 border-gray-300 bg-radial from-slate-600 from-40% to-slate-700 p-4 shadow-2xl shadow-gray-700"
+					id="game-settings"
+					novalidate>
+					<h2 class="text-center text-3xl underline">Game Options</h2>
+					<div class="flex flex-col gap-1" id="player-name-input">
+						<label class="block italic" for="player-name"
+							>Enter your name:</label
+						>
+						<input
+							class="rounded-full bg-[#eee] px-4 text-gray-600 outline outline-black focus:bg-white focus:text-gray-700 focus:outline-2 focus:outline-blue-900"
+							type="text"
+							name="player-name"
+							id="player-name"
+							placeholder="player"
+							required />
+					</div>
+					<div class="flex flex-col gap-1" id="board-size-input">
+						<label class="block italic" for="board-size">Board size:</label>
+						<input
+							class="rounded-full bg-[#eee] px-4 text-gray-600 outline outline-black focus:bg-white focus:text-gray-700 focus:outline-2 focus:outline-blue-900"
+							type="number"
+							min="5"
+							max="10"
+							value="10"
+							name="board-size"
+							id="board-size"
+							required />
+					</div>
+					<div class="flex flex-col gap-1" id="num-ships-input">
+						<label class="block italic" for="num-ships">Number of ships:</label>
+						<input
+							class="rounded-full bg-[#eee] px-4 text-gray-600 outline outline-black focus:bg-white focus:text-gray-700 focus:outline-2 focus:outline-blue-900"
+							type="number"
+							min="1"
+							max="10"
+							value="5"
+							name="num-ships"
+							id="num-ships"
+							required />
+					</div>
+					<div class="flex flex-col gap-1" id="max-misses-input">
+						<label class="block italic" for="max-misses"
+							>Allowed missed attacks:</label
+						>
+						<input
+							class="rounded-full bg-[#eee] px-4 text-gray-600 outline outline-black focus:bg-white focus:text-gray-700 focus:outline-2 focus:outline-blue-900"
+							type="number"
+							min="1"
+							max="10"
+							value="7"
+							name="max-misses"
+							id="max-misses"
+							required />
+					</div>
+					<button
+						class="mx-auto w-1/2 cursor-pointer rounded-full border border-black bg-green-700 p-2 font-bold text-white hover:bg-green-600"
+						id="start-game"
+						type="submit"
+						>Start Game</button
+					>
+				</form>
+			</div>
+			<div class="hidden flex-col" id="game">
+				<div
+					class="grid flex-1 grid-cols-2 divide-x-2 divide-gray-400 bg-sky-900"
+					id="player">
+					<!-- TODO: Add stats for each player -->
+					<!-- TODO: Add ship selection menu for player -->
+					<div id="player">
+						<h3 class="my-4 text-center text-3xl text-gray-200 underline"
+							>Your Board</h3
+						>
+						<div
+							class="my-8 grid grid-cols-[repeat(10,auto)] place-content-center gap-px"
+							id="player-board"></div>
+					</div>
+					<div id="enemey">
+						<h3 class="my-4 text-center text-3xl text-gray-200 underline"
+							>Opponent's Board</h3
+						>
+						<div
+							class="my-8 grid grid-cols-[repeat(10,auto)] place-content-center gap-px"
+							id="enemy-board"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
