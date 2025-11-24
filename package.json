@@ -1,7 +1,7 @@
 {
-	"name": "package",
+	"name": "battleship",
 	"version": "1.0.0",
-	"description": "A Webpack project with Tailwind CSS and PostCSS",
+	"description": "A simple Battleship game.",
 	"main": "index.js",
 	"scripts": {
 		"test": "npx eslint src/ && jest",
@@ -16,15 +16,15 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/StilettoDagger/webpack-tailwind-template.git"
+		"url": "git+https://github.com/StilettoDagger/battleship.git"
 	},
 	"keywords": [],
 	"author": "",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/StilettoDagger/webpack-tailwind-template/issues"
+		"url": "https://github.com/StilettoDagger/battleship/issues"
 	},
-	"homepage": "https://github.com/StilettoDagger/webpack-tailwind-template",
+	"homepage": "https://github.com/StilettoDagger/battleship",
 	"devDependencies": {
 		"@babel/core": "^7.28.5",
 		"@babel/preset-env": "^7.28.5",
