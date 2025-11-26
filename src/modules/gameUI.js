@@ -167,7 +167,7 @@ function renderAddShips() {
 						>Add Ships (<span id="add-ships-left"></span> ships left)</h3
 					>
 					<div
-						class="bg-zinc-800 h-full p-4 grid grid-cols-2 justify-center items-center justify-around rounded-2xl border"
+						class="bg-zinc-800 h-full p-4 grid grid-cols-2 items-center justify-center rounded-2xl border"
 						id="ships-menu">
 						<div class="flex gap-2" id="ship-1-opt">
 							<button
@@ -257,9 +257,8 @@ function addRotateButtonsHandlers() {
 			if (ship.getAttribute("data-orient") === "horizontal") {
 				ship.setAttribute("data-orient", "vertical");
 			} else {
-				ship.setAttribute("data-orient", "vertical");
+				ship.setAttribute("data-orient", "horizontal");
 			}
-			ship.setAttribute("data-orient", "vertical");
 		});
 	});
 }
