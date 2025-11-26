@@ -32,13 +32,23 @@ export default class GameManager {
 	}
 
 	placePlayerShip(shipSize, orientation, x, y) {
-		return this.player.gameBoard.placeShip(shipSize, orientation, x, y);
+		if (this.#numShips - this.playerShipsNum > 0) {
+			return this.player.gameBoard.placeShip(shipSize, orientation, x, y);
+		}
 	}
 
 	makePlayerMove(x, y) {
 		const att = this.player.attack(this.compPlayer, x, y);
 		if (this.#checkGameOver(this.compPlayer)) this.winner = this.player;
 		return att;
+	}
+
+	resetPlayerBoard() {
+		this.player.gameBoard.resetBoard();
+	}
+
+	randomizePlayerShips() {
+		this.player.gameBoard.randomizeShips(this.#numShips);
 	}
 
 	#checkGameOver(player) {
@@ -76,5 +86,9 @@ export default class GameManager {
 
 	get maxMissed() {
 		return this.#maxMissed;
+	}
+
+	get playerName() {
+		return this.player.name;
 	}
 }

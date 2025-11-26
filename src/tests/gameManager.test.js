@@ -25,7 +25,6 @@ describe("Game manager tests", () => {
 		expect(gameManager.player.name).toBe("stiletto");
 		expect(gameManager.compPlayer).toEqual(expect.any(ComputerPlayer));
 		expect(gameManager.compPlayer.name).toBe("computer");
-		// expect(gameManager.compPlayer.gameBoard.ships).toHaveLength(5);
 	});
 	test("GameManager should include a method to place a player's ship", () => {
 		expect(gameManager.placePlayerShip).toBeDefined();
@@ -70,5 +69,17 @@ describe("Game manager tests", () => {
 		expect(gameManager.initializeComputerShips).toBeInstanceOf(Function);
 		gameManager.initializeComputerShips();
 		expect(gameManager.compPlayer.gameBoard.ships).toHaveLength(5);
+	});
+	test("GameManager should have a method to reset player's board and remove all ships", () => {
+		expect(gameManager.resetPlayerBoard).toBeDefined();
+		expect(gameManager.resetPlayerBoard).toBeInstanceOf(Function);
+		gameManager.resetPlayerBoard();
+		expect(gameManager.playerShipsNum).toBe(0);
+	});
+	test("GameManger should have a method to randomly place a given number of ships on the player's board", () => {
+		expect(gameManager.randomizePlayerShips).toBeDefined();
+		expect(gameManager.randomizePlayerShips).toBeInstanceOf(Function);
+		gameManager.randomizePlayerShips(5);
+		expect(gameManager.playerShipsNum).toBe(5);
 	});
 });
