@@ -82,7 +82,8 @@
 					id="players">
 					<!-- TODO: Add stats for each player -->
 					<div id="player">
-						<h3 class="my-4 text-center text-3xl text-gray-200 underline"
+						<h3
+							class="my-4 text-center text-3xl font-bold text-gray-200 underline"
 							>Your Board</h3
 						>
 						<div
@@ -90,7 +91,13 @@
 							id="player-board"></div>
 					</div>
 				</div>
-				<div class="flex-1" id="game-state"> </div>
+				<div
+					class="mx-auto flex flex-1 flex-col justify-center rounded-full text-center text-3xl/12"
+					id="game-state">
+					<p
+						id="game-state-message"
+						class="rounded-full border-2 bg-slate-800 px-16 py-4 text-slate-200 italic shadow-2xl"></p>
+				</div>
 			</div>
 		</div>
 	</body>

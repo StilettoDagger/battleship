@@ -83,6 +83,7 @@ function startGamePlan(e) {
 	dragAndDropShips();
 	addShipMenuHandlers();
 	updateAddShipsCounter();
+	renderAddShipsMessage();
 }
 
 export default function initializeApp() {
@@ -161,17 +162,17 @@ function renderAddShips() {
 	const addShipsDiv = document.createElement("div");
 	addShipsDiv.id = "ships-selection";
 	addShipsDiv.className =
-		"mx-auto p-4 mb-4 flex flex-col gap-4 rounded-2xl text-gray-200";
+		"mx-auto p-4 mb-4 flex flex-col gap-8 rounded-2xl text-gray-200";
 	addShipsDiv.innerHTML = `
 					<h3 class="text-center text-3xl font-bold underline"
 						>Add Ships (<span id="add-ships-left"></span> ships left)</h3
 					>
 					<div
-						class="bg-zinc-800 h-full p-4 grid grid-cols-2 items-center justify-center rounded-2xl border"
+						class="bg-zinc-200 h-full p-4 grid grid-cols-2 items-center justify-center rounded-2xl shadow-2xl"
 						id="ships-menu">
 						<div class="flex gap-2" id="ship-1-opt">
 							<button
-								class="rotate-button cursor-pointer text-3xl text-gray-400 hover:text-gray-300"
+								class="rotate-button cursor-pointer text-3xl text-gray-600 hover:text-gray-800"
 								><span class="icon-[mdi--rotate-counter-clockwise]"></span
 							></button>
 							<div
@@ -185,7 +186,7 @@ function renderAddShips() {
 						</div>
 						<div class="flex gap-2" id="ship-2-opt">
 							<button
-								class="rotate-button cursor-pointer text-3xl text-gray-400 hover:text-gray-300"
+								class="rotate-button cursor-pointer text-3xl text-gray-600 hover:text-gray-800"
 								><span class="icon-[mdi--rotate-counter-clockwise]"></span
 							></button>
 							<div
@@ -200,7 +201,7 @@ function renderAddShips() {
 						</div>
 						<div class="flex gap-2" id="ship-3-opt">
 							<button
-								class="rotate-button cursor-pointer text-3xl text-gray-400 hover:text-gray-300"
+								class="rotate-button cursor-pointer text-3xl text-gray-600 hover:text-gray-800"
 								><span class="icon-[mdi--rotate-counter-clockwise]"></span
 							></button>
 							<div
@@ -216,7 +217,7 @@ function renderAddShips() {
 						</div>
 						<div class="flex gap-2" id="ship-4-opt">
 							<button
-								class="rotate-button cursor-pointer text-3xl text-gray-400 hover:text-gray-300"
+								class="rotate-button cursor-pointer text-3xl text-gray-600 hover:text-gray-800"
 								><span class="icon-[mdi--rotate-counter-clockwise]"></span
 							></button>
 							<div
@@ -263,13 +264,28 @@ function addRotateButtonsHandlers() {
 	});
 }
 
+function startGame() {
+	if (gameManager.playerShipsNum < gameManager.numShips) {
+		const missingShips = gameManager.numShips - gameManager.playerShipsNum;
+		renderAddShipsWarnMessage(missingShips);
+		setTimeout(() => {
+			renderAddShipsMessage();
+		}, 3000);
+		return;
+	}
+	removeAddShips();
+	renderEnemyBoard(gameManager.boardSize);
+}
+
+function renderAddShipsWarnMessage(missingShips) {
+	const gameStateMessage = document.getElementById("game-state-message");
+	gameStateMessage.innerText = `Insufficient number of ships\nPlease add ${missingShips} more ships`;
+}
+
 function addStartGameHandler() {
 	const startButton = document.getElementById("ship-menu-start");
 
-	startButton.addEventListener("click", () => {
-		removeAddShips();
-		renderEnemyBoard(gameManager.boardSize);
-	});
+	startButton.addEventListener("click", startGame);
 }
 
 function addRandomizeShipsHandler() {
@@ -298,4 +314,9 @@ function addShipMenuHandlers() {
 	addStartGameHandler();
 	addRandomizeShipsHandler();
 	addResetBoardHandler();
+}
+
+function renderAddShipsMessage() {
+	const gameStateMessage = document.getElementById("game-state-message");
+	gameStateMessage.innerText = "Add your ships";
 }
