@@ -4,6 +4,7 @@ export default class GameManager {
 	#boardSize;
 	#numShips;
 	#maxMissed;
+	#isGameOver;
 	constructor(boardSize, numShips, maxMissed) {
 		this.#boardSize = boardSize;
 		this.#numShips = numShips;
@@ -11,7 +12,7 @@ export default class GameManager {
 		this.compPlayer = null;
 		this.#maxMissed = maxMissed;
 		this.isPlayerTurn = true;
-		this.winner = null;
+		this.#isGameOver = false;
 	}
 
 	getPlayerSquare(x, y) {
@@ -40,7 +41,12 @@ export default class GameManager {
 
 	makePlayerMove(x, y) {
 		const att = this.player.attack(this.compPlayer, x, y);
-		if (this.#checkGameOver(this.compPlayer)) this.winner = this.player;
+		if (
+			this.#checkGameOver(this.compPlayer) ||
+			this.playerMissedAttacks >= this.#maxMissed
+		) {
+			this.#isGameOver = true;
+		}
 		return att;
 	}
 
@@ -74,7 +80,23 @@ export default class GameManager {
 		}
 		const randomMove =
 			validMoves[Math.floor(Math.random() * validMoves.length)];
+		if (
+			this.#checkGameOver(this.compPlayer) ||
+			this.enemyMissedAttacks >= this.#maxMissed
+		) {
+			this.#isGameOver = true;
+		}
 		return this.compPlayer.attack(this.player, randomMove.x, randomMove.y);
+	}
+
+	determineWinner() {
+		if (this.playerDestroyedShips > this.enemyDestroyedShips) {
+			return this.player;
+		} else if (this.enemyDestroyedShips > this.playerDestroyedShips) {
+			return this.compPlayer;
+		} else {
+			return null;
+		}
 	}
 
 	get playerShipsNum() {
@@ -111,5 +133,9 @@ export default class GameManager {
 
 	get enemyDestroyedShips() {
 		return this.compPlayer.shipsDestroyed;
+	}
+
+	get isGameOver() {
+		return this.#isGameOver;
 	}
 }

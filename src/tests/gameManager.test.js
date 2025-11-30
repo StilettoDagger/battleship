@@ -101,8 +101,16 @@ describe("Game manager tests", () => {
 		expect(gameManager.playerDestroyedShips).toBe(1);
 
 		expect(gameManager.enemyMissedAttacks).toBe(2);
+		expect(gameManager.enemyDestroyedShips).toBe(0);
 	});
 	test("GameManger should have a boolean property for the player's turn", () => {
 		expect(gameManager.isPlayerTurn).toBe(true);
+	});
+	test("GameManager should have a game over flag property", () => {
+		expect(gameManager.isGameOver).toBeDefined;
+	});
+	test("GameManager should have a method to determine the winner of the game", () => {
+		expect(gameManager.isGameOver).toBe(true);
+		expect(gameManager.determineWinner()).toBe(gameManager.player);
 	});
 });

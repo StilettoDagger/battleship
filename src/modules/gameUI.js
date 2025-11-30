@@ -356,7 +356,6 @@ function addEnemySquaresHandlers() {
 		square.addEventListener("click", () => {
 			if (!gameManager.isPlayerTurn) return;
 
-			gameManager.isPlayerTurn = false;
 			const x = Number(square.getAttribute("data-x"));
 			const y = Number(square.getAttribute("data-y"));
 
@@ -366,6 +365,8 @@ function addEnemySquaresHandlers() {
 				return;
 			}
 
+			gameManager.isPlayerTurn = false;
+
 			if (att.ship) {
 				markShipHitSquare(square);
 				renderPlayerHitMessage(att);
@@ -374,6 +375,10 @@ function addEnemySquaresHandlers() {
 				renderPlayerMissMessage(att);
 			}
 			updateStats();
+			if (gameManager.isGameOver) {
+				renderGameOver();
+				return;
+			}
 			setTimeout(() => {
 				startComputerTurn();
 			}, 3000);
@@ -414,6 +419,11 @@ async function startComputerTurn() {
 
 	updateStats();
 
+	if (gameManager.isGameOver) {
+		renderGameOver();
+		return;
+	}
+
 	setTimeout(() => {
 		renderPlayerTurnMessage();
 		gameManager.isPlayerTurn = true;
@@ -441,7 +451,7 @@ function renderEnemyTurnMessage() {
 }
 
 function renderPlayerHitMessage(attack) {
-	gameStateMessage.textContent = `Your attack has hit a ship on ${attack.x}, ${attack.y}`;
+	gameStateMessage.textContent = `You have hit a ship on ${attack.x}, ${attack.y}`;
 	if (attack.ship.isSunk) {
 		gameStateMessage.innerHTML += "<br>You have sunk a ship!";
 	}
@@ -452,14 +462,14 @@ function renderPlayerMissMessage(attack) {
 }
 
 function renderEnemyHitMessage(attack) {
-	gameStateMessage.textContent = `The enemy's attack has hit your ship on ${attack.x}, ${attack.y}`;
+	gameStateMessage.textContent = `The enemy has hit your ship on ${attack.x}, ${attack.y}`;
 	if (attack.ship.isSunk) {
-		gameStateMessage.innerHTML += "<br>Your enemy has sunk your ship!";
+		gameStateMessage.innerHTML += "<br>The enemy has sunk your ship!";
 	}
 }
 
 function renderEnemyMissMessage(attack) {
-	gameStateMessage.textContent = `The enemy's attack has missed on ${attack.x}, ${attack.y}`;
+	gameStateMessage.textContent = `The enemy's attack on ${attack.x}, ${attack.y} has missed`;
 }
 
 function updateStats() {
@@ -474,4 +484,21 @@ function updateStats() {
 
 	const enemyMissedAttacks = document.getElementById("enemy-missed-attacks");
 	enemyMissedAttacks.textContent = gameManager.enemyMissedAttacks;
+}
+
+function renderGameOver() {
+	const winner = gameManager.determineWinner();
+	let gameOverMessage = "Game Over!";
+	if (winner === gameManager.player) {
+		gameStateMessage.classList.remove("bg-slate-800");
+		gameStateMessage.classList.add("bg-green-800");
+		gameStateMessage.innerHTML = gameOverMessage + "<br>You have won!";
+	} else if (winner === gameManager.compPlayer) {
+		gameStateMessage.classList.remove("bg-slate-800");
+		gameStateMessage.classList.add("bg-red-800");
+		gameStateMessage.innerHTML =
+			gameOverMessage + "<br>You have lost. Better luck next time!";
+	} else {
+		gameStateMessage.innerHTML = gameOverMessage + "<br>It's a tie!";
+	}
 }
