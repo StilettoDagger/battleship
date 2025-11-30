@@ -275,6 +275,8 @@ function startGame() {
 	}
 	removeAddShips();
 	renderEnemyBoard(gameManager.boardSize);
+	renderPlayerStats();
+	renderEnemyStats();
 }
 
 function renderAddShipsWarnMessage(missingShips) {
@@ -319,4 +321,23 @@ function addShipMenuHandlers() {
 function renderAddShipsMessage() {
 	const gameStateMessage = document.getElementById("game-state-message");
 	gameStateMessage.innerText = "Add your ships";
+}
+
+function renderPlayerStats() {
+	const playerStats = document.getElementById("player-stats");
+	playerStats.innerHTML = `
+	<h4 class="text-center text-gray-300 mb-4">Downed Ships: <span id="player-downed-ships">0</span>
+	</h4>`;
+}
+
+function renderEnemyStats() {
+	const enemyDiv = document.getElementById("enemy");
+	const enemyStats = document.createElement("div");
+	enemyStats.id = "enemy-stats";
+
+	enemyStats.innerHTML = `
+	<h4 class="text-center text-gray-300 mb-4">Downed Ships: <span id="enemy-downed-ships">0</span>
+	</h4>`;
+
+	enemyDiv.appendChild(enemyStats);
 }
