@@ -10,6 +10,7 @@ export default class GameManager {
 		this.player = null;
 		this.compPlayer = null;
 		this.#maxMissed = maxMissed;
+		this.isPlayerTurn = true;
 		this.winner = null;
 	}
 
@@ -44,7 +45,11 @@ export default class GameManager {
 	}
 
 	resetPlayerBoard() {
-		this.player.gameBoard.resetBoard();
+		this.player.resetBoard();
+	}
+
+	resetComputerBoard() {
+		this.compPlayer.resetBoard();
 	}
 
 	randomizePlayerShips() {
@@ -90,5 +95,21 @@ export default class GameManager {
 
 	get playerName() {
 		return this.player.name;
+	}
+
+	get playerMissedAttacks() {
+		return this.player.missedAttacks;
+	}
+
+	get enemyMissedAttacks() {
+		return this.compPlayer.missedAttacks;
+	}
+
+	get playerDestroyedShips() {
+		return this.player.shipsDestroyed;
+	}
+
+	get enemyDestroyedShips() {
+		return this.compPlayer.shipsDestroyed;
 	}
 }

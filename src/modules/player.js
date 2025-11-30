@@ -49,6 +49,14 @@ export class Player {
 		}
 	}
 
+	resetBoard() {
+		this.gameBoard.resetBoard();
+		this.#missedAttacks = 0;
+		this.#shipsDestroyed = 0;
+		this.attacks = [];
+		this.#initializeAttacks();
+	}
+
 	get missedAttacks() {
 		return this.#missedAttacks;
 	}

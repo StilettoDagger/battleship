@@ -82,4 +82,27 @@ describe("Game manager tests", () => {
 		gameManager.randomizePlayerShips(5);
 		expect(gameManager.playerShipsNum).toBe(5);
 	});
+	test("GameManager should have stat properties for both players for missed attacks and downed ships", () => {
+		gameManager.resetPlayerBoard();
+		gameManager.resetComputerBoard();
+
+		gameManager.placePlayerShip(3, "horizontal", 0, 0);
+		gameManager.compPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
+
+		gameManager.makePlayerMove(0, 0);
+		gameManager.makePlayerMove(2, 2);
+		gameManager.makePlayerMove(2, 3);
+
+		gameManager.compPlayer.attack(gameManager.player, 2, 2);
+		gameManager.compPlayer.attack(gameManager.player, 2, 3);
+		gameManager.compPlayer.attack(gameManager.player, 0, 0);
+
+		expect(gameManager.playerMissedAttacks).toBe(1);
+		expect(gameManager.playerDestroyedShips).toBe(1);
+
+		expect(gameManager.enemyMissedAttacks).toBe(2);
+	});
+	test("GameManger should have a boolean property for the player's turn", () => {
+		expect(gameManager.isPlayerTurn).toBe(true);
+	});
 });
