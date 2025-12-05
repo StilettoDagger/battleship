@@ -372,9 +372,9 @@ function renderAddShipsMessage() {
 function renderPlayerStats() {
 	const playerStats = document.getElementById("player-stats");
 	playerStats.innerHTML = `
-    <h4 class="text-center text-gray-300">Downed Ships: <span id="player-downed-ships">0</span>
-    </h4>
     <h4 class="text-center text-gray-300">Missed Attacks: <span id="player-missed-attacks">0</span>
+    </h4>
+    <h4 class="text-center text-gray-300">Downed Ships: <span id="player-downed-ships">0</span>
     </h4>
     <h4 class="text-center text-xl font-bold text-gray-300 underline">Score: <span id="player-score">0</span>
     </h4>
@@ -388,9 +388,9 @@ function renderEnemyStats() {
 	enemyStats.className = "flex flex-col gap-1 mb-2 select-none";
 
 	enemyStats.innerHTML = `
-    <h4 class="text-center text-gray-300">Downed Ships: <span id="enemy-downed-ships">0</span>
-    </h4>
     <h4 class="text-center text-gray-300">Missed Attacks: <span id="enemy-missed-attacks">0</span>
+    </h4>
+    <h4 class="text-center text-gray-300">Downed Ships: <span id="enemy-downed-ships">0</span>
     </h4>
     <h4 class="text-center text-xl font-bold text-gray-300 underline">Score: <span id="enemy-score">0</span>
     </h4>
@@ -425,11 +425,11 @@ function addEnemySquaresHandlers() {
 				renderPlayerMissMessage(att);
 			}
 			updateStats();
-			if (gameManager.isGameOver) {
-				renderGameOver();
-				return;
-			}
 			setTimeout(() => {
+				if (gameManager.isGameOver) {
+					renderGameOver();
+					return;
+				}
 				startComputerTurn();
 			}, 3000);
 		});
@@ -469,12 +469,11 @@ async function startComputerTurn() {
 
 	updateStats();
 
-	if (gameManager.isGameOver) {
-		renderGameOver();
-		return;
-	}
-
 	setTimeout(() => {
+		if (gameManager.isGameOver) {
+			renderGameOver();
+			return;
+		}
 		renderPlayerTurnMessage();
 		gameManager.isPlayerTurn = true;
 	}, 3000);
@@ -553,11 +552,11 @@ function renderGameOver() {
 	let gameOverMessage = "Game Over!";
 	if (winner === gameManager.player) {
 		gameStateMessage.classList.remove("text-slate-200");
-		gameStateMessage.classList.add("text-green-200");
+		gameStateMessage.classList.add("text-green-500");
 		gameStateMessage.innerHTML = gameOverMessage + "<br>You have won!";
 	} else if (winner === gameManager.compPlayer) {
 		gameStateMessage.classList.remove("text-slate-200");
-		gameStateMessage.classList.add("text-red-200");
+		gameStateMessage.classList.add("text-red-500");
 		gameStateMessage.innerHTML =
 			gameOverMessage + "<br>You have lost. Better luck next time!";
 	} else {

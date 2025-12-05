@@ -80,19 +80,20 @@ export default class GameManager {
 		}
 		const randomMove =
 			validMoves[Math.floor(Math.random() * validMoves.length)];
+		const att = this.compPlayer.attack(this.player, randomMove.x, randomMove.y);
 		if (
 			this.#checkGameOver(this.compPlayer) ||
 			this.enemyMissedAttacks >= this.#maxMissed
 		) {
 			this.#isGameOver = true;
 		}
-		return this.compPlayer.attack(this.player, randomMove.x, randomMove.y);
+		return att;
 	}
 
 	determineWinner() {
-		if (this.playerDestroyedShips > this.enemyDestroyedShips) {
+		if (this.playerScore > this.enemyScore) {
 			return this.player;
-		} else if (this.enemyDestroyedShips > this.playerDestroyedShips) {
+		} else if (this.enemyScore > this.playerScore) {
 			return this.compPlayer;
 		} else {
 			return null;
