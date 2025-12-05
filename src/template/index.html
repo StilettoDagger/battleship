@@ -5,9 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Battleship</title>
 	</head>
-	<body class="bg-radial from-blue-300 from-40% to-blue-400 to-120% font-inter">
+	<body class="bg-radial from-blue-100 from-40% to-blue-200 to-100% font-inter">
 		<div class="flex h-screen flex-col" id="app">
-			<h1 class="mt-8 text-center font-alumni text-8xl font-bold"
+			<h1 class="mt-4 text-center font-alumni text-8xl font-bold"
 				>Battleship</h1
 			>
 			<div
@@ -76,29 +76,28 @@
 					>
 				</form>
 			</div>
-			<div class="hidden flex-1 flex-col gap-8" id="game">
+			<div
+				class="mx-auto hidden w-4/5 flex-col gap-8 rounded-2xl bg-sky-800 pt-2 pb-2 shadow-2xl shadow-gray-800"
+				id="game">
 				<div
-					class="grid flex-1 grid-cols-2 divide-x-2 divide-gray-400/70 bg-sky-900"
+					class="mx-auto flex h-20 flex-col justify-center rounded-full text-center text-2xl/10 select-none"
+					id="game-state">
+					<p id="game-state-message" class="text-slate-200 italic"></p>
+				</div>
+				<div
+					class="grid flex-1 grid-cols-2 divide-x-2 divide-gray-400/70"
 					id="players">
 					<!-- TODO: Add stats for each player -->
-					<div id="player">
-						<h3
-							class="my-4 text-center text-3xl font-bold text-gray-200 underline"
+					<div class="flex flex-col gap-3" id="player">
+						<h3 class="text-center text-3xl font-bold text-gray-200 underline"
 							>Your Board</h3
 						>
 						<div
-							class="my-8 grid place-content-center gap-px"
+							class="grid place-content-center gap-px"
 							id="player-board"></div>
-						<div class="mb-2 flex flex-col gap-1 select-none" id="player-stats">
+						<div class="flex flex-col gap-1 select-none" id="player-stats">
 						</div>
 					</div>
-				</div>
-				<div
-					class="mx-auto flex flex-1 flex-col justify-center rounded-full text-center text-2xl/10 select-none"
-					id="game-state">
-					<p
-						id="game-state-message"
-						class="rounded-3xl border-2 bg-slate-800 px-16 py-2 text-slate-200 italic shadow-2xl"></p>
 				</div>
 			</div>
 		</div>

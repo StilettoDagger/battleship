@@ -36,7 +36,7 @@ function renderPlayerBoard(boardSize) {
 			playerSquare.setAttribute("data-x", j);
 			playerSquare.setAttribute("data-y", i);
 			playerSquare.setAttribute("data-ship", "false");
-			playerSquare.className = "size-10 bg-slate-200 player-square";
+			playerSquare.className = "size-12 bg-slate-200 player-square";
 			playerBoard.appendChild(playerSquare);
 		}
 	}
@@ -50,12 +50,13 @@ function renderEnemyBoard(boardSize) {
 	const enemyDiv = document.createElement("div");
 	const playersDiv = document.getElementById("players");
 	enemyDiv.id = "enemy";
+	enemyDiv.className = "flex flex-col gap-3";
 	enemyDiv.innerHTML = `
-    <h3 class="my-4 text-center text-3xl text-gray-200 underline"
+    <h3 class="text-center text-3xl text-gray-200 underline"
         >Opponent
     </h3>
     <div
-        class="my-8 grid place-content-center gap-px"
+        class="grid place-content-center gap-px"
         id="enemy-board">
     </div>
     `;
@@ -91,7 +92,8 @@ function renderEnemyBoard(boardSize) {
 			enemySquare.setAttribute("data-x", j);
 			enemySquare.setAttribute("data-y", i);
 			enemySquare.setAttribute("data-ship", "false");
-			enemySquare.className = "size-10 bg-slate-200 enemy-square";
+			enemySquare.className =
+				"size-12 bg-slate-200 enemy-square hover:bg-slate-300 cursor-pointer";
 			enemyBoard.appendChild(enemySquare);
 		}
 	}
@@ -206,7 +208,7 @@ function renderAddShips() {
 	const addShipsDiv = document.createElement("div");
 	addShipsDiv.id = "ships-selection";
 	addShipsDiv.className =
-		"mx-auto p-4 mb-4 flex flex-col gap-8 rounded-2xl text-gray-200";
+		"mx-auto p-4 flex flex-col gap-8 rounded-2xl text-gray-200";
 	addShipsDiv.innerHTML = `
                     <h3 class="text-center text-3xl font-bold underline"
                         >Add Ships (<span id="add-ships-left"></span> ships left)</h3
@@ -479,12 +481,12 @@ async function startComputerTurn() {
 }
 
 function markShipHitSquare(square) {
-	square.classList.remove("bg-slate-200");
+	square.classList.remove("bg-slate-200", "hover:bg-slate-300");
 	square.classList.add("bg-red-400");
 }
 
 function markEmptySquare(square) {
-	square.classList.remove("bg-slate-200");
+	square.classList.remove("bg-slate-200", "hover:bg-slate-300");
 	square.classList.add("bg-gray-400");
 }
 
@@ -550,12 +552,12 @@ function renderGameOver() {
 	const winner = gameManager.determineWinner();
 	let gameOverMessage = "Game Over!";
 	if (winner === gameManager.player) {
-		gameStateMessage.classList.remove("bg-slate-800");
-		gameStateMessage.classList.add("bg-green-800");
+		gameStateMessage.classList.remove("text-slate-200");
+		gameStateMessage.classList.add("text-green-200");
 		gameStateMessage.innerHTML = gameOverMessage + "<br>You have won!";
 	} else if (winner === gameManager.compPlayer) {
-		gameStateMessage.classList.remove("bg-slate-800");
-		gameStateMessage.classList.add("bg-red-800");
+		gameStateMessage.classList.remove("text-slate-200");
+		gameStateMessage.classList.add("text-red-200");
 		gameStateMessage.innerHTML =
 			gameOverMessage + "<br>You have lost. Better luck next time!";
 	} else {
