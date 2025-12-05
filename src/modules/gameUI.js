@@ -370,9 +370,11 @@ function renderAddShipsMessage() {
 function renderPlayerStats() {
 	const playerStats = document.getElementById("player-stats");
 	playerStats.innerHTML = `
-    <h4 class="text-center text-gray-300 mb-4">Downed Ships: <span id="player-downed-ships">0</span>
+    <h4 class="text-center text-gray-300">Downed Ships: <span id="player-downed-ships">0</span>
     </h4>
-    <h4 class="text-center text-gray-300 mb-4">Missed Attacks: <span id="player-missed-attacks">0</span>
+    <h4 class="text-center text-gray-300">Missed Attacks: <span id="player-missed-attacks">0</span>
+    </h4>
+    <h4 class="text-center text-xl font-bold text-gray-300 underline">Score: <span id="player-score">0</span>
     </h4>
     `;
 }
@@ -381,11 +383,14 @@ function renderEnemyStats() {
 	const enemyDiv = document.getElementById("enemy");
 	const enemyStats = document.createElement("div");
 	enemyStats.id = "enemy-stats";
+	enemyStats.className = "flex flex-col gap-1 mb-2 select-none";
 
 	enemyStats.innerHTML = `
-    <h4 class="text-center text-gray-300 mb-4">Downed Ships: <span id="enemy-downed-ships">0</span>
+    <h4 class="text-center text-gray-300">Downed Ships: <span id="enemy-downed-ships">0</span>
     </h4>
-    <h4 class="text-center text-gray-300 mb-4">Missed Attacks: <span id="enemy-missed-attacks">0</span>
+    <h4 class="text-center text-gray-300">Missed Attacks: <span id="enemy-missed-attacks">0</span>
+    </h4>
+    <h4 class="text-center text-xl font-bold text-gray-300 underline">Score: <span id="enemy-score">0</span>
     </h4>
     `;
 
@@ -522,11 +527,17 @@ function updateStats() {
 	const playerMissedAttacks = document.getElementById("player-missed-attacks");
 	playerMissedAttacks.textContent = gameManager.playerMissedAttacks;
 
+	const playerScore = document.getElementById("player-score");
+	playerScore.textContent = gameManager.playerScore;
+
 	const enemyDestroyedShips = document.getElementById("enemy-downed-ships");
 	enemyDestroyedShips.textContent = gameManager.enemyDestroyedShips;
 
 	const enemyMissedAttacks = document.getElementById("enemy-missed-attacks");
 	enemyMissedAttacks.textContent = gameManager.enemyMissedAttacks;
+
+	const enemyScore = document.getElementById("enemy-score");
+	enemyScore.textContent = gameManager.enemyScore;
 }
 
 function renderGameOver() {

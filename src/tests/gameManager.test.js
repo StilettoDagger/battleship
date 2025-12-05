@@ -113,4 +113,21 @@ describe("Game manager tests", () => {
 		expect(gameManager.isGameOver).toBe(true);
 		expect(gameManager.determineWinner()).toBe(gameManager.player);
 	});
+	test("GameManager should be able to retrieve player and enemy score", () => {
+		gameManager.resetPlayerBoard();
+		gameManager.resetComputerBoard();
+
+		gameManager.placePlayerShip(3, "horizontal", 0, 0);
+		gameManager.compPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
+
+		gameManager.compPlayer.attack(gameManager.player, 0, 0);
+		gameManager.compPlayer.attack(gameManager.player, 0, 1);
+		gameManager.compPlayer.attack(gameManager.player, 1, 0);
+
+		gameManager.makePlayerMove(2, 2);
+		gameManager.makePlayerMove(2, 3);
+
+		expect(gameManager.playerScore).toBe(7);
+		expect(gameManager.enemyScore).toBe(2);
+	});
 });

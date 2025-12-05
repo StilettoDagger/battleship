@@ -135,6 +135,14 @@ export default class GameManager {
 		return this.compPlayer.shipsDestroyed;
 	}
 
+	get playerScore() {
+		return this.player.score;
+	}
+
+	get enemyScore() {
+		return this.compPlayer.score;
+	}
+
 	get isGameOver() {
 		return this.#isGameOver;
 	}
