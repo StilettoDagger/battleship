@@ -498,26 +498,32 @@ function renderEnemyTurnMessage() {
 		"It's your opponent's turn<br>Wait for your opponent to make a move";
 }
 
+function getBoardCoordinate(attack) {
+	const x = attack.x;
+	const letter = String.fromCharCode("A".charCodeAt(0) + x);
+	return `${letter}${attack.y + 1}`;
+}
+
 function renderPlayerHitMessage(attack) {
-	gameStateMessage.textContent = `You have hit a ship on ${attack.x}, ${attack.y}`;
+	gameStateMessage.textContent = `You have hit a ship on ${getBoardCoordinate(attack)}`;
 	if (attack.ship.isSunk) {
 		gameStateMessage.innerHTML += "<br>You have sunk a ship!";
 	}
 }
 
 function renderPlayerMissMessage(attack) {
-	gameStateMessage.textContent = `Your attack on ${attack.x}, ${attack.y} has missed!`;
+	gameStateMessage.textContent = `Your attack on ${getBoardCoordinate(attack)} has missed!`;
 }
 
 function renderEnemyHitMessage(attack) {
-	gameStateMessage.textContent = `The enemy has hit your ship on ${attack.x}, ${attack.y}`;
+	gameStateMessage.textContent = `The enemy has hit your ship on ${getBoardCoordinate(attack)}`;
 	if (attack.ship.isSunk) {
 		gameStateMessage.innerHTML += "<br>The enemy has sunk your ship!";
 	}
 }
 
 function renderEnemyMissMessage(attack) {
-	gameStateMessage.textContent = `The enemy's attack on ${attack.x}, ${attack.y} has missed`;
+	gameStateMessage.textContent = `The enemy's attack on ${getBoardCoordinate(attack)} has missed`;
 }
 
 function updateStats() {
