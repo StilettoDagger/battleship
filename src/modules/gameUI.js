@@ -8,7 +8,29 @@ function renderPlayerBoard(boardSize) {
 
 	// TODO: Draw board axes
 
+	playerBoard.style.gridTemplateColumns = `repeat(${boardSize + 1}, auto)`;
+
+	// Empty top left corner
+	const corner = document.createElement("div");
+	playerBoard.appendChild(corner);
+
+	// Draw column labels
 	for (let i = 0; i < boardSize; i++) {
+		const firstChar = "A";
+		const charLabel = String.fromCharCode(firstChar.charCodeAt(0) + i);
+
+		const col = document.createElement("div");
+		col.className = "text-center text-gray-200 mb-2 select-none";
+		col.textContent = charLabel;
+		playerBoard.appendChild(col);
+	}
+
+	for (let i = 0; i < boardSize; i++) {
+		// Draw row labels
+		const row = document.createElement("div");
+		row.className = "text-gray-200 content-center mr-2 select-none";
+		row.textContent = i + 1;
+		playerBoard.appendChild(row);
 		for (let j = 0; j < boardSize; j++) {
 			const playerSquare = document.createElement("div");
 			playerSquare.setAttribute("data-x", j);
@@ -33,7 +55,7 @@ function renderEnemyBoard(boardSize) {
         >Opponent
     </h3>
     <div
-        class="my-8 grid grid-cols-[repeat(10,auto)] place-content-center gap-px"
+        class="my-8 grid place-content-center gap-px"
         id="enemy-board">
     </div>
     `;
@@ -41,8 +63,29 @@ function renderEnemyBoard(boardSize) {
 	playersDiv.appendChild(enemyDiv);
 
 	const enemyBoard = document.getElementById("enemy-board");
+	enemyBoard.style.gridTemplateColumns = `repeat(${boardSize + 1}, auto)`;
+
+	// Empty top left corner
+	const corner = document.createElement("div");
+	enemyBoard.appendChild(corner);
+
+	// Draw column labels
+	for (let i = 0; i < boardSize; i++) {
+		const firstChar = "A";
+		const charLabel = String.fromCharCode(firstChar.charCodeAt(0) + i);
+
+		const col = document.createElement("div");
+		col.className = "text-center text-gray-200 mb-2 select-none";
+		col.textContent = charLabel;
+		enemyBoard.appendChild(col);
+	}
 
 	for (let i = 0; i < boardSize; i++) {
+		// Draw row labels
+		const row = document.createElement("div");
+		row.className = "text-gray-200 content-center mr-2 select-none";
+		row.textContent = i + 1;
+		enemyBoard.appendChild(row);
 		for (let j = 0; j < boardSize; j++) {
 			const enemySquare = document.createElement("div");
 			enemySquare.setAttribute("data-x", j);
