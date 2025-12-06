@@ -6,8 +6,6 @@ const gameStateMessage = document.getElementById("game-state-message");
 function renderPlayerBoard(boardSize) {
 	const playerBoard = document.getElementById("player-board");
 
-	// TODO: Draw board axes
-
 	playerBoard.style.gridTemplateColumns = `repeat(${boardSize + 1}, auto)`;
 
 	// Empty top left corner
@@ -490,11 +488,39 @@ function markEmptySquare(square) {
 }
 
 function renderPlayerTurnMessage() {
+	const playerName = document.querySelector("#player>h3");
+	const opponentName = document.querySelector("#enemy>h3");
+	playerName.classList.remove("text-gray-200");
+	playerName.classList.add(
+		"text-green-500",
+		"font-bold",
+		"before:content-['>']"
+	);
+	opponentName.classList.add("text-gray-200");
+	opponentName.classList.remove(
+		"text-red-500",
+		"font-bold",
+		"before:content-['>']"
+	);
 	gameStateMessage.innerHTML =
 		"It's your turn<br>Make a move on the opponent's board";
 }
 
 function renderEnemyTurnMessage() {
+	const playerName = document.querySelector("#player>h3");
+	const opponentName = document.querySelector("#enemy>h3");
+	playerName.classList.remove(
+		"text-green-500",
+		"font-bold",
+		"before:content-['>']"
+	);
+	playerName.classList.add("text-gray-200");
+	opponentName.classList.add(
+		"text-red-500",
+		"font-bold",
+		"before:content-['>']"
+	);
+	opponentName.classList.remove("text-gray-200");
 	gameStateMessage.innerHTML =
 		"It's your opponent's turn<br>Wait for your opponent to make a move";
 }
