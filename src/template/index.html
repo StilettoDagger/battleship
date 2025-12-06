@@ -6,18 +6,18 @@
 		<title>Battleship</title>
 	</head>
 	<body class="bg-radial from-blue-100 from-40% to-blue-200 to-100% font-inter">
-		<div class="flex h-screen flex-col" id="app">
-			<h1 class="mt-4 text-center font-alumni text-8xl font-bold"
+		<div class="flex h-screen flex-col items-center" id="app">
+			<h1 class="mt-4 text-center font-alumni text-6xl font-bold xl:text-8xl"
 				>Battleship</h1
 			>
 			<div
-				class="mx-auto mt-44 flex flex-col text-2xl font-bold text-gray-100"
+				class="my-auto flex w-full flex-col text-lg font-bold text-gray-100 sm:w-max sm:text-2xl"
 				id="main-menu">
 				<form
 					class="flex flex-col gap-4 rounded-3xl border-2 border-gray-300 bg-radial from-slate-600 from-40% to-slate-700 p-4 shadow-2xl shadow-gray-700"
 					id="game-settings"
 					novalidate>
-					<h2 class="text-center text-3xl underline">Game Options</h2>
+					<h2 class="text-center underline">Game Options</h2>
 					<div class="flex flex-col gap-1" id="player-name-input">
 						<label class="block italic" for="player-name"
 							>Enter your name:</label
@@ -79,24 +79,36 @@
 			<!-- TODO: add responsive design -->
 			<!-- TODO: add buttons to restart the game and go back to the main menu -->
 			<div
-				class="mx-auto hidden w-4/5 flex-col gap-8 rounded-2xl bg-sky-800 pt-2 pb-2 shadow-2xl shadow-gray-800"
+				class="mx-auto my-auto hidden w-full flex-col gap-4 rounded-none bg-sky-800 pt-2 pb-2 shadow-2xl shadow-gray-800 sm:w-11/12 sm:rounded-2xl xl:w-4/5 xl:gap-8"
 				id="game">
 				<div
-					class="mx-auto flex h-20 flex-col justify-center rounded-full text-center text-2xl/10 select-none"
+					class="mx-auto flex h-auto flex-col justify-center rounded-full text-center text-base select-none sm:text-xl xl:h-20 xl:text-2xl/10"
 					id="game-state">
 					<p id="game-state-message" class="text-slate-200 italic"></p>
 				</div>
 				<div
-					class="grid flex-1 grid-cols-2 divide-x-2 divide-gray-400/70"
+					class="grid flex-1 grid-cols-1 divide-gray-400/70 xl:grid-cols-2 xl:divide-x-2"
 					id="players">
-					<div class="flex flex-col gap-3" id="player">
-						<h3 class="text-center text-3xl font-bold text-gray-200 underline"
-							>Your Board</h3
-						>
+					<div
+						class="order-last flex flex-col gap-3 border-t-2 border-gray-400/70 py-2 xl:order-first xl:border-t-0 xl:py-0"
+						id="player">
+						<div class="flex items-center justify-around" id="player-stats">
+							<h3 class="text-center text-sm text-gray-300 select-none">
+								Missed Attacks: <span id="player-missed-attacks">0</span>
+							</h3>
+							<h3
+								id="player-current-name"
+								class="text-center text-2xl font-bold text-gray-200 underline xl:text-3xl"
+								>Your Board</h3
+							>
+							<h3 class="text-center text-sm text-gray-300 select-none">
+								Downed Ships: <span id="player-downed-ships">0</span>
+							</h3>
+						</div>
 						<div
 							class="grid place-content-center gap-px"
 							id="player-board"></div>
-						<div class="flex flex-col gap-1 select-none" id="player-stats">
+						<div class="flex flex-col gap-1 select-none" id="player-score">
 						</div>
 					</div>
 				</div>

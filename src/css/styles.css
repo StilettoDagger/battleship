@@ -6,3 +6,31 @@
 	--font-inter: "Inter", sans-serif;
 	--font-alumni: "Alumni Sans", sans-serif;
 }
+
+.player-square,
+.enemy-square {
+	@apply size-8 bg-slate-200 sm:size-10 xl:size-12;
+}
+
+.player-square.ship,
+.enemy-square.ship {
+	@apply bg-green-700 hover:bg-green-700;
+}
+
+.player-square.hit,
+.enemy-square.hit {
+	@apply bg-red-400 hover:bg-red-400;
+}
+
+.player-square.miss,
+.enemy-square.miss {
+	@apply bg-gray-400 hover:bg-gray-400;
+}
+
+.enemy-square {
+	@apply cursor-pointer hover:bg-slate-300;
+}
+
+.ship-preview {
+	@apply pointer-events-none size-8 bg-green-700 sm:size-10 xl:size-12;
+}
