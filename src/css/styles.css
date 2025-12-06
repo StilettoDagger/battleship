@@ -34,3 +34,16 @@
 .ship-preview {
 	@apply pointer-events-none size-8 bg-green-700 sm:size-10 xl:size-12;
 }
+
+#enemy-name,
+#player-current-name {
+	@apply text-center text-2xl font-bold text-gray-200 underline xl:text-3xl;
+}
+
+#player-current-name.current {
+	@apply font-bold text-green-500;
+}
+
+#enemy-name.current {
+	@apply font-bold text-red-500;
+}

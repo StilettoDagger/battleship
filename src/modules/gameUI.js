@@ -527,18 +527,8 @@ function markEmptySquare(square) {
 function renderPlayerTurnMessage() {
 	const playerName = document.getElementById("player-current-name");
 	const opponentName = document.getElementById("enemy-name");
-	playerName.classList.remove("text-gray-200");
-	playerName.classList.add(
-		"text-green-500",
-		"font-bold",
-		"before:content-['>']"
-	);
-	opponentName.classList.add("text-gray-200");
-	opponentName.classList.remove(
-		"text-red-500",
-		"font-bold",
-		"before:content-['>']"
-	);
+	playerName.classList.add("current");
+	opponentName.classList.remove("current");
 	gameStateMessage.innerHTML =
 		"It's your turn<br>Make a move on the opponent's board";
 }
@@ -546,18 +536,8 @@ function renderPlayerTurnMessage() {
 function renderEnemyTurnMessage() {
 	const playerName = document.getElementById("player-current-name");
 	const opponentName = document.getElementById("enemy-name");
-	playerName.classList.remove(
-		"text-green-500",
-		"font-bold",
-		"before:content-['>']"
-	);
-	playerName.classList.add("text-gray-200");
-	opponentName.classList.add(
-		"text-red-500",
-		"font-bold",
-		"before:content-['>']"
-	);
-	opponentName.classList.remove("text-gray-200");
+	playerName.classList.remove("current");
+	opponentName.classList.add("current");
 	gameStateMessage.innerHTML =
 		"It's your opponent's turn<br>Wait for your opponent to make a move";
 }
