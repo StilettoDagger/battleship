@@ -58,6 +58,13 @@ export default class GameManager {
 		this.compPlayer.resetBoard();
 	}
 
+	resetGame() {
+		this.resetPlayerBoard();
+		this.resetComputerBoard();
+		this.#isGameOver = false;
+		this.isPlayerTurn = true;
+	}
+
 	randomizePlayerShips() {
 		this.player.gameBoard.randomizeShips(this.#numShips);
 	}

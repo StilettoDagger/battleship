@@ -2,6 +2,7 @@ import GameManager from "./gameManager";
 import interact from "interactjs";
 
 let gameManager = null;
+let timeoutID;
 const gameStateMessage = document.getElementById("game-state-message");
 
 function renderPlayerBoard(boardSize) {
@@ -53,23 +54,25 @@ function renderEnemyBoard(boardSize) {
 	enemyDiv.id = "enemy";
 	enemyDiv.className = "flex flex-col gap-3 py-2 xl:py-0";
 	enemyDiv.innerHTML = `
-        <div class="flex justify-around items-center" id="enemy-stats">
-            <h3 class="text-center text-sm text-gray-300 select-none">
+        <div class="mx-12 flex justify-center gap-4 items-center" id="enemy-stats">
+            <h3 class="align-middle text-left text-xs sm:text-sm text-gray-300 select-none">
                 Missed Attacks: <span id="enemy-missed-attacks">0</span>
             </h3>
-            <h3 id="enemy-name" class="text-center text-2xl xl:text-3xl font-bold text-gray-200 underline"
+            <h3 id="enemy-name" class="align-middle flex-1 text-center text-2xl xl:text-3xl font-bold text-gray-200 underline"
                 >Opponent</h3
             >
-            <h3 class="text-center text-sm text-gray-300 select-none">
+            <h3 class="align-middle text-right text-xs sm:text-sm text-gray-300 select-none">
                 Downed Ships: <span id="enemy-downed-ships">0</span>
             </h3>
         </div>
         <div
-			class="grid place-content-center gap-px"
-			id="enemy-board">
+            class="grid place-content-center gap-px"
+            id="enemy-board">
         </div>
         <div class="flex flex-col gap-1 select-none" id="enemy-score">
-		</div>
+            <h4 class="text-center text-lg xl:text-xl font-bold text-gray-300 underline">Score: <span id="enemy-score-num">0</span>
+            </h4>
+        </div>
     `;
 
 	playersDiv.appendChild(enemyDiv);
@@ -135,13 +138,16 @@ function startGamePlan(e) {
 	gameManager = new GameManager(boardSize, numShips, maxMisses);
 	gameManager.initializePlayers(playerName);
 	gameManager.initializeComputerShips();
-	toggleGameBoards();
+	showGameBoards();
 	renderPlayerBoard(boardSize);
 	renderAddShips();
 	dragAndDropShips();
 	addShipMenuHandlers();
 	updateAddShipsCounter();
 	renderAddShipsMessage();
+	showHeaderButtons();
+	addMenuButtonHandler();
+	addRestartButtonHandler();
 }
 
 export default function initializeApp() {
@@ -149,26 +155,72 @@ export default function initializeApp() {
 	gameSettingsForm.addEventListener("submit", startGamePlan);
 }
 
-function toggleGameBoards() {
+function hideHeaderButtons() {
+	const menuButton = document.getElementById("menu-button");
+	const restartButton = document.getElementById("restart-button");
+
+	menuButton.classList.add("hidden");
+	restartButton.classList.add("hidden");
+}
+
+function showHeaderButtons() {
+	const menuButton = document.getElementById("menu-button");
+	const restartButton = document.getElementById("restart-button");
+
+	menuButton.classList.remove("hidden");
+	restartButton.classList.remove("hidden");
+}
+
+function showGameBoards() {
 	const gameDiv = document.getElementById("game");
 	const mainMenuDiv = document.getElementById("main-menu");
+	mainMenuDiv.classList.remove("flex");
+	mainMenuDiv.classList.add("hidden");
+	gameDiv.classList.remove("hidden");
+	gameDiv.classList.add("flex");
+}
 
-	mainMenuDiv.classList.toggle("flex");
-	mainMenuDiv.classList.toggle("hidden");
-	gameDiv.classList.toggle("hidden");
-	gameDiv.classList.toggle("flex");
+function showMainMenu() {
+	const gameDiv = document.getElementById("game");
+	const mainMenuDiv = document.getElementById("main-menu");
+	mainMenuDiv.classList.add("flex");
+	mainMenuDiv.classList.remove("hidden");
+	gameDiv.classList.add("hidden");
+	gameDiv.classList.remove("flex");
+}
+
+function addMenuButtonHandler() {
+	const menuButton = document.getElementById("menu-button");
+	menuButton.addEventListener("click", () => {
+		clearTimeout(timeoutID);
+		removeAddShips();
+		showMainMenu();
+		gameManager.resetGame();
+		removePlayerBoard();
+		removeEnemyDiv();
+		hideHeaderButtons();
+		resetPlayerStats();
+	});
+}
+
+function addRestartButtonHandler() {
+	const restartButton = document.getElementById("restart-button");
+	restartButton.addEventListener("click", () => {
+		clearTimeout(timeoutID);
+		gameManager.resetGame();
+		removeEnemyDiv();
+		removePlayerBoard();
+		removeAddShips();
+		renderAddShips();
+		renderPlayerBoard(gameManager.boardSize);
+		renderAddShipsMessage();
+		addShipMenuHandlers();
+		updateAddShipsCounter();
+		resetPlayerStats();
+	});
 }
 
 function dragAndDropShips() {
-	// const ships = document.querySelectorAll(".ship");
-
-	// ships.forEach((ship) => {
-	// 	ship.addEventListener("dragstart", (e) => {
-	// 		e.dataTransfer.setData("length", e.target.getAttribute("data-length"));
-	// 		e.dataTransfer.setData("orient", e.target.getAttribute("data-orient"));
-	// 	});
-	// });
-
 	interact(".ship-select").draggable({
 		autoScroll: true,
 		listeners: {
@@ -213,27 +265,6 @@ function dragAndDropShips() {
 			ship.removeAttribute("data-y");
 		},
 	});
-
-	// const playerSquares = document.querySelectorAll(".player-square");
-
-	// playerSquares.forEach((square) => {
-	// 	square.addEventListener("dragover", (e) => {
-	// 		e.preventDefault();
-	// 	});
-	// 	square.addEventListener("drop", (e) => {
-	// 		e.preventDefault();
-
-	// 		const length = e.dataTransfer.getData("length");
-	// 		const orient = e.dataTransfer.getData("orient");
-
-	// 		const x = Number(square.getAttribute("data-x"));
-	// 		const y = Number(square.getAttribute("data-y"));
-
-	// 		gameManager.placePlayerShip(length, orient, x, y);
-	// 		updatePlayerSquares();
-	// 		updateAddShipsCounter();
-	// 	});
-	// });
 }
 
 function updatePlayerSquares() {
@@ -342,7 +373,21 @@ function renderAddShips() {
 
 function removeAddShips() {
 	const addShipsDiv = document.getElementById("ships-selection");
-	addShipsDiv.remove();
+	if (addShipsDiv) {
+		addShipsDiv.remove();
+	}
+}
+
+function removeEnemyDiv() {
+	const enemyDiv = document.getElementById("enemy");
+	if (enemyDiv) {
+		enemyDiv.remove();
+	}
+}
+
+function removePlayerBoard() {
+	const playerBoard = document.getElementById("player-board");
+	playerBoard.innerHTML = "";
 }
 
 function addRotateButtonsHandlers() {
@@ -365,15 +410,13 @@ function startGame() {
 	if (gameManager.playerShipsNum < gameManager.numShips) {
 		const missingShips = gameManager.numShips - gameManager.playerShipsNum;
 		renderAddShipsWarnMessage(missingShips);
-		setTimeout(() => {
+		timeoutID = setTimeout(() => {
 			renderAddShipsMessage();
 		}, 3000);
 		return;
 	}
 	removeAddShips();
 	renderEnemyBoard(gameManager.boardSize);
-	renderPlayerScore();
-	renderEnemyScore();
 	addEnemySquaresHandlers();
 	renderPlayerTurnMessage();
 }
@@ -420,22 +463,6 @@ function renderAddShipsMessage() {
 	gameStateMessage.textContent = "Add your ships";
 }
 
-function renderPlayerScore() {
-	const playerScore = document.getElementById("player-score");
-	playerScore.innerHTML = `
-    <h4 class="text-center text-lg xl:text-xl font-bold text-gray-300 underline">Score: <span id="player-score-num">0</span>
-    </h4>
-    `;
-}
-
-function renderEnemyScore() {
-	const enemyScore = document.getElementById("enemy-score");
-	enemyScore.innerHTML = `
-    <h4 class="text-center text-lg xl:text-xl font-bold text-gray-300 underline">Score: <span id="enemy-score-num">0</span>
-    </h4>
-    `;
-}
-
 function addEnemySquaresHandlers() {
 	const enemySquares = document.querySelectorAll(".enemy-square");
 
@@ -462,7 +489,7 @@ function addEnemySquaresHandlers() {
 				renderPlayerMissMessage(att);
 			}
 			updateStats();
-			setTimeout(() => {
+			timeoutID = setTimeout(() => {
 				if (gameManager.isGameOver) {
 					renderGameOver();
 					return;
@@ -477,7 +504,7 @@ async function startComputerTurn() {
 	renderEnemyTurnMessage();
 	let att;
 	const attPromise = new Promise((resolve, reject) => {
-		setTimeout(() => {
+		timeoutID = setTimeout(() => {
 			const att = gameManager.makeComputerMove();
 			if (att) {
 				resolve(att);
@@ -506,7 +533,7 @@ async function startComputerTurn() {
 
 	updateStats();
 
-	setTimeout(() => {
+	timeoutID = setTimeout(() => {
 		if (gameManager.isGameOver) {
 			renderGameOver();
 			return;
@@ -588,6 +615,23 @@ function updateStats() {
 
 	const enemyScore = document.getElementById("enemy-score-num");
 	enemyScore.textContent = gameManager.enemyScore;
+}
+
+function resetPlayerStats() {
+	const playerDestroyedShips = document.getElementById("player-downed-ships");
+	playerDestroyedShips.textContent = 0;
+
+	const playerMissedAttacks = document.getElementById("player-missed-attacks");
+	playerMissedAttacks.textContent = 0;
+
+	const playerScore = document.getElementById("player-score-num");
+
+	if (playerScore) {
+		playerScore.textContent = 0;
+	}
+
+	const playerName = document.getElementById("player-current-name");
+	playerName.classList.remove("current");
 }
 
 function renderGameOver() {

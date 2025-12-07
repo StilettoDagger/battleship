@@ -7,9 +7,22 @@
 	</head>
 	<body class="bg-radial from-blue-100 from-40% to-blue-200 to-100% font-inter">
 		<div class="flex h-screen flex-col items-center" id="app">
-			<h1 class="mt-4 text-center font-alumni text-6xl font-bold xl:text-8xl"
-				>Battleship</h1
-			>
+			<header class="mt-4 flex items-center justify-center gap-6 sm:gap-20">
+				<button id="menu-button" class="hidden"
+					><span
+						class="mx-auto icon-[material-symbols--exit-to-app] align-middle text-2xl sm:mr-2"></span
+					><span class="hidden align-middle sm:inline">Leave</span></button
+				>
+				<h1
+					class="flex-1 text-center font-alumni text-6xl font-bold xl:text-8xl"
+					>Battleship</h1
+				>
+				<button id="restart-button" class="hidden"
+					><span
+						class="mx-auto icon-[material-symbols--restart-alt] align-middle text-2xl sm:mr-2"></span
+					><span class="hidden align-middle sm:inline">Restart</span></button
+				>
+			</header>
 			<div
 				class="my-auto flex w-full flex-col text-lg font-bold text-gray-100 sm:w-max sm:text-2xl"
 				id="main-menu">
@@ -76,8 +89,6 @@
 					>
 				</form>
 			</div>
-			<!-- TODO: add responsive design -->
-			<!-- TODO: add buttons to restart the game and go back to the main menu -->
 			<div
 				class="mx-auto my-auto hidden w-full flex-col gap-4 rounded-none bg-sky-800 pt-2 pb-2 shadow-2xl shadow-gray-800 sm:w-11/12 sm:rounded-2xl xl:w-4/5 xl:gap-8"
 				id="game">
@@ -92,16 +103,20 @@
 					<div
 						class="order-last flex flex-col gap-3 border-t-2 border-gray-400/70 py-2 xl:order-first xl:border-t-0 xl:py-0"
 						id="player">
-						<div class="flex items-center justify-around" id="player-stats">
-							<h3 class="text-center text-sm text-gray-300 select-none">
+						<div
+							class="mx-12 flex items-center justify-center gap-4"
+							id="player-stats">
+							<h3
+								class="text-left align-middle text-xs text-gray-300 select-none sm:text-sm">
 								Missed Attacks: <span id="player-missed-attacks">0</span>
 							</h3>
 							<h3
 								id="player-current-name"
-								class="text-center text-2xl font-bold text-gray-200 underline xl:text-3xl"
+								class="flex-1 text-center align-middle text-2xl font-bold text-gray-200 underline xl:text-3xl"
 								>Your Board</h3
 							>
-							<h3 class="text-center text-sm text-gray-300 select-none">
+							<h3
+								class="text-right align-middle text-xs text-gray-300 select-none sm:text-sm">
 								Downed Ships: <span id="player-downed-ships">0</span>
 							</h3>
 						</div>
@@ -109,6 +124,10 @@
 							class="grid place-content-center gap-px"
 							id="player-board"></div>
 						<div class="flex flex-col gap-1 select-none" id="player-score">
+							<h4
+								class="text-center text-lg font-bold text-gray-300 underline xl:text-xl"
+								>Score: <span id="player-score-num">0</span>
+							</h4>
 						</div>
 					</div>
 				</div>

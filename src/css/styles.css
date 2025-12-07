@@ -9,7 +9,7 @@
 
 .player-square,
 .enemy-square {
-	@apply size-8 bg-slate-200 sm:size-10 xl:size-12;
+	@apply size-6 bg-slate-200 sm:size-10 xl:size-12;
 }
 
 .player-square.ship,
@@ -32,7 +32,7 @@
 }
 
 .ship-preview {
-	@apply pointer-events-none size-8 bg-green-700 sm:size-10 xl:size-12;
+	@apply pointer-events-none size-6 bg-green-700 sm:size-10 xl:size-12;
 }
 
 #enemy-name,
@@ -46,4 +46,12 @@
 
 #enemy-name.current {
 	@apply font-bold text-red-500;
+}
+
+#menu-button {
+	@apply size-9 cursor-pointer rounded-full bg-red-700 font-bold text-gray-200 duration-75 hover:bg-red-800 sm:size-auto sm:px-4 sm:py-2;
+}
+
+#restart-button {
+	@apply size-9 cursor-pointer rounded-full bg-blue-700 font-bold text-gray-200 duration-75 hover:bg-blue-800 sm:size-auto sm:px-4 sm:py-2;
 }
