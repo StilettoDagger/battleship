@@ -35,6 +35,14 @@
 	@apply pointer-events-none size-6 bg-green-700 sm:size-10 xl:size-12;
 }
 
+.ship-select {
+	@apply flex touch-none duration-75;
+}
+
+.ship-select.dragging {
+	@apply transition-none!;
+}
+
 #enemy-name,
 #player-current-name {
 	@apply text-center text-2xl font-bold text-gray-200 underline xl:text-3xl;

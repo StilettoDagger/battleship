@@ -224,6 +224,9 @@ function dragAndDropShips() {
 	interact(".ship-select").draggable({
 		autoScroll: true,
 		listeners: {
+			start(event) {
+				event.target.classList.add("dragging");
+			},
 			move(event) {
 				const target = event.target;
 				const x = (parseFloat(target.getAttribute("data-x")) || 0) + event.dx;
@@ -239,6 +242,7 @@ function dragAndDropShips() {
 				target.setAttribute("data-y", y);
 			},
 			end(event) {
+				event.target.classList.remove("dragging");
 				event.target.style.transform = "";
 				event.target.removeAttribute("data-x");
 				event.target.removeAttribute("data-y");
@@ -310,7 +314,7 @@ function renderAddShips() {
                             <div
                                 data-orient="horizontal"
                                 data-length="1"
-                                class="ship-select flex touch-none"
+                                class="ship-select"
                                 id="ship-1">
                                 <div class="ship-preview"></div>
                             </div>
@@ -323,7 +327,7 @@ function renderAddShips() {
                             <div
                                 data-orient="horizontal"
                                 data-length="2"
-                                class="ship-select flex touch-none"
+                                class="ship-select"
                                 id="ship-2">
                                 <div class="ship-preview"></div>
                                 <div class="ship-preview"></div>
@@ -337,7 +341,7 @@ function renderAddShips() {
                             <div
                                 data-orient="horizontal"
                                 data-length="3"
-                                class="ship-select flex touch-none"
+                                class="ship-select"
                                 id="ship-3">
                                 <div class="ship-preview"></div>
                                 <div class="ship-preview"></div>
@@ -352,7 +356,7 @@ function renderAddShips() {
                             <div
                                 data-orient="horizontal"
                                 data-length="4"
-                                class="ship-select flex touch-none"
+                                class="ship-select"
                                 id="ship-4">
                                 <div class="ship-preview"></div>
                                 <div class="ship-preview"></div>
