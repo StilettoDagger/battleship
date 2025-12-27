@@ -1,36 +1,63 @@
 import { Player, ComputerPlayer } from "./player.js";
 
+// TODO: implement two player game system
+// TODO: fix ui to be compatible with two player games
+
 export default class GameManager {
 	#boardSize;
 	#numShips;
 	#maxMissed;
 	#isGameOver;
-	constructor(boardSize, numShips, maxMissed) {
+	#isComputerGame;
+	constructor(boardSize, numShips, maxMissed, isComputerGame) {
 		this.#boardSize = boardSize;
 		this.#numShips = numShips;
 		this.player = null;
-		this.compPlayer = null;
+		this.secondPlayer = null;
 		this.#maxMissed = maxMissed;
 		this.isPlayerTurn = true;
 		this.#isGameOver = false;
+		this.#isComputerGame = isComputerGame;
+		this.isPlayerAddTurn = true;
 	}
 
 	getPlayerSquare(x, y) {
 		return this.player.gameBoard.getSquare(x, y);
 	}
 
-	getComputerSquare(x, y) {
-		return this.compPlayer.gameBoard.getSquare(x, y);
+	getSecondPlayerSquare(x, y) {
+		return this.secondPlayer.gameBoard.getSquare(x, y);
 	}
 
-	initializePlayers(playerName) {
+	getComputerSquare(x, y) {
+		return this.secondPlayer.gameBoard.getSquare(x, y);
+	}
+
+	initializePlayers(playerName, secondPlayerName) {
+		this.initializePlayer(playerName);
+		if (this.#isComputerGame) {
+			this.initializeComputerPlayer();
+			this.initializeComputerShips();
+		} else {
+			this.initializeSecondPlayer(secondPlayerName);
+		}
+	}
+
+	initializePlayer(playerName) {
 		this.player = new Player(playerName, this.#boardSize);
-		this.compPlayer = new ComputerPlayer(this.#boardSize);
+	}
+
+	initializeSecondPlayer(playerName) {
+		this.secondPlayer = new Player(playerName, this.#boardSize);
+	}
+
+	initializeComputerPlayer() {
+		this.secondPlayer = new ComputerPlayer(this.#boardSize);
 	}
 
 	initializeComputerShips() {
-		this.compPlayer.gameBoard.resetBoard();
-		this.compPlayer.gameBoard.randomizeShips(this.#numShips);
+		this.secondPlayer.gameBoard.resetBoard();
+		this.secondPlayer.gameBoard.randomizeShips(this.#numShips);
 	}
 
 	placePlayerShip(shipSize, orientation, x, y) {
@@ -39,10 +66,16 @@ export default class GameManager {
 		}
 	}
 
+	placeSecondPlayerShip(shipSize, orientation, x, y) {
+		if (this.#numShips - this.secondPlayerShipsNum > 0) {
+			return this.secondPlayer.gameBoard.placeShip(shipSize, orientation, x, y);
+		}
+	}
+
 	makePlayerMove(x, y) {
-		const att = this.player.attack(this.compPlayer, x, y);
+		const att = this.player.attack(this.secondPlayer, x, y);
 		if (
-			this.#checkGameOver(this.compPlayer) ||
+			this.#checkGameOver(this.secondPlayer) ||
 			this.playerMissedAttacks >= this.#maxMissed
 		) {
 			this.#isGameOver = true;
@@ -51,22 +84,30 @@ export default class GameManager {
 	}
 
 	resetPlayerBoard() {
-		this.player.resetBoard();
+		if (this.isPlayerAddTurn) {
+			this.player.resetBoard();
+		} else {
+			this.resetSecondPlayerBoard();
+		}
 	}
 
-	resetComputerBoard() {
-		this.compPlayer.resetBoard();
+	resetSecondPlayerBoard() {
+		this.secondPlayer.resetBoard();
 	}
 
 	resetGame() {
 		this.resetPlayerBoard();
-		this.resetComputerBoard();
+		this.resetSecondPlayerBoard();
 		this.#isGameOver = false;
 		this.isPlayerTurn = true;
 	}
 
 	randomizePlayerShips() {
-		this.player.gameBoard.randomizeShips(this.#numShips);
+		if (this.isPlayerAddTurn) {
+			this.player.gameBoard.randomizeShips(this.#numShips);
+		} else {
+			this.secondPlayer.gameBoard.randomizeShips(this.#numShips);
+		}
 	}
 
 	#checkGameOver(player) {
@@ -77,7 +118,7 @@ export default class GameManager {
 		const validMoves = [];
 		for (let x = 0; x < this.#boardSize; x++) {
 			for (let y = 0; y < this.#boardSize; y++) {
-				if (this.compPlayer.checkValidAttackSquare(x, y)) {
+				if (this.secondPlayer.checkValidAttackSquare(x, y)) {
 					validMoves.push({ x, y });
 				}
 			}
@@ -87,9 +128,13 @@ export default class GameManager {
 		}
 		const randomMove =
 			validMoves[Math.floor(Math.random() * validMoves.length)];
-		const att = this.compPlayer.attack(this.player, randomMove.x, randomMove.y);
+		const att = this.secondPlayer.attack(
+			this.player,
+			randomMove.x,
+			randomMove.y
+		);
 		if (
-			this.#checkGameOver(this.compPlayer) ||
+			this.#checkGameOver(this.secondPlayer) ||
 			this.enemyMissedAttacks >= this.#maxMissed
 		) {
 			this.#isGameOver = true;
@@ -101,7 +146,7 @@ export default class GameManager {
 		if (this.playerScore > this.enemyScore) {
 			return this.player;
 		} else if (this.enemyScore > this.playerScore) {
-			return this.compPlayer;
+			return this.secondPlayer;
 		} else {
 			return null;
 		}
@@ -109,6 +154,10 @@ export default class GameManager {
 
 	get playerShipsNum() {
 		return this.player.gameBoard.ships.length;
+	}
+
+	get secondPlayerShipsNum() {
+		return this.secondPlayer.gameBoard.ships.length;
 	}
 
 	get numShips() {
@@ -127,12 +176,20 @@ export default class GameManager {
 		return this.player.name;
 	}
 
+	get secondPlayerName() {
+		return this.secondPlayer.name;
+	}
+
+	get isComputerGame() {
+		return this.#isComputerGame;
+	}
+
 	get playerMissedAttacks() {
 		return this.player.missedAttacks;
 	}
 
 	get enemyMissedAttacks() {
-		return this.compPlayer.missedAttacks;
+		return this.secondPlayer.missedAttacks;
 	}
 
 	get playerDestroyedShips() {
@@ -140,7 +197,7 @@ export default class GameManager {
 	}
 
 	get enemyDestroyedShips() {
-		return this.compPlayer.shipsDestroyed;
+		return this.secondPlayer.shipsDestroyed;
 	}
 
 	get playerScore() {
@@ -148,7 +205,7 @@ export default class GameManager {
 	}
 
 	get enemyScore() {
-		return this.compPlayer.score;
+		return this.secondPlayer.score;
 	}
 
 	get isGameOver() {

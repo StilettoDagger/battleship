@@ -40,8 +40,28 @@
 							type="text"
 							name="player-name"
 							id="player-name"
-							placeholder="player"
-							required />
+							placeholder="player" />
+					</div>
+					<div class="flex flex-col gap-1" id="comp-game-input">
+						<label class="block italic" for="comp-game"
+							>Play against the computer?</label
+						>
+						<input
+							class="self-start"
+							type="checkbox"
+							name="comp-game"
+							id="comp-game" />
+					</div>
+					<div class="flex flex-col gap-1" id="second-player-name-input">
+						<label class="block italic" for="second-player-name"
+							>Enter player two's name:</label
+						>
+						<input
+							class="rounded-full bg-[#eee] px-4 text-gray-600 outline outline-black focus:bg-white focus:text-gray-700 focus:outline-2 focus:outline-blue-900"
+							type="text"
+							name="second-player-name"
+							id="second-player-name"
+							placeholder="player2" />
 					</div>
 					<div class="flex flex-col gap-1" id="board-size-input">
 						<label class="block italic" for="board-size">Board size:</label>

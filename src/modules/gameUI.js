@@ -1,9 +1,12 @@
 import GameManager from "./gameManager";
 import interact from "interactjs";
 
+// TODO: implement two player game system and implement its UI
+
 let gameManager = null;
 let timeoutID;
 const gameStateMessage = document.getElementById("game-state-message");
+const gameSettingsForm = document.getElementById("game-settings");
 
 function renderPlayerBoard(boardSize) {
 	const playerBoard = document.getElementById("player-board");
@@ -45,7 +48,9 @@ function renderPlayerBoard(boardSize) {
 
 	const playerName = document.getElementById("player-current-name");
 
-	playerName.textContent = gameManager.playerName;
+	playerName.textContent = gameManager.isPlayerAddTurn
+		? gameManager.playerName
+		: gameManager.secondPlayerName;
 }
 
 function renderEnemyBoard(boardSize) {
@@ -114,8 +119,7 @@ function renderEnemyBoard(boardSize) {
 	}
 }
 
-// Get user info and game settings, then start the game
-const gameSettingsForm = document.getElementById("game-settings");
+// Get user info and game settings, then start the game plan
 
 function startGamePlan(e) {
 	e.preventDefault();
@@ -124,7 +128,14 @@ function startGamePlan(e) {
 	}
 
 	const playerNameInput = document.getElementById("player-name");
-	const playerName = playerNameInput.value;
+	const playerName = playerNameInput.value || playerNameInput.placeholder;
+
+	const isComputerGameInput = document.getElementById("comp-game");
+	const isComputerGame = isComputerGameInput.checked;
+
+	const secondPlayerNameInput = document.getElementById("second-player-name");
+	const secondPlayerName =
+		secondPlayerNameInput.value || secondPlayerNameInput.placeholder;
 
 	const boardSizeInput = document.getElementById("board-size");
 	const boardSize = Number(boardSizeInput.value);
@@ -135,24 +146,34 @@ function startGamePlan(e) {
 	const maxMissesInput = document.getElementById("max-misses");
 	const maxMisses = Number(maxMissesInput.value);
 
-	gameManager = new GameManager(boardSize, numShips, maxMisses);
-	gameManager.initializePlayers(playerName);
-	gameManager.initializeComputerShips();
+	gameManager = new GameManager(boardSize, numShips, maxMisses, isComputerGame);
+	gameManager.initializePlayers(playerName, secondPlayerName);
 	showGameBoards();
 	renderPlayerBoard(boardSize);
 	renderAddShips();
 	dragAndDropShips();
 	addShipMenuHandlers();
 	updateAddShipsCounter();
-	renderAddShipsMessage();
+	renderAddShipsMessage(gameManager.playerName);
 	showHeaderButtons();
 	addMenuButtonHandler();
 	addRestartButtonHandler();
 }
 
 export default function initializeApp() {
-	const gameSettingsForm = document.getElementById("game-settings");
+	// Add start game handler
 	gameSettingsForm.addEventListener("submit", startGamePlan);
+
+	// Add handler to show second player name input when toggling the option to play against the computer
+	const toggleCompGame = document.getElementById("comp-game");
+	toggleCompGame.checked = false;
+	toggleCompGame.addEventListener("change", () => {
+		const secondPlayerNameDiv = document.getElementById(
+			"second-player-name-input"
+		);
+		secondPlayerNameDiv.classList.toggle("hidden");
+		secondPlayerNameDiv.classList.toggle("flex");
+	});
 }
 
 function hideHeaderButtons() {
@@ -213,7 +234,7 @@ function addRestartButtonHandler() {
 		removeAddShips();
 		renderAddShips();
 		renderPlayerBoard(gameManager.boardSize);
-		renderAddShipsMessage();
+		renderAddShipsMessage(gameManager.playerName);
 		addShipMenuHandlers();
 		updateAddShipsCounter();
 		resetPlayerStats();
@@ -260,7 +281,11 @@ function dragAndDropShips() {
 			const x = Number(event.target.getAttribute("data-x"));
 			const y = Number(event.target.getAttribute("data-y"));
 
-			gameManager.placePlayerShip(length, orient, x, y);
+			if (!gameManager.isPlayerAddTurn) {
+				gameManager.placeSecondPlayerShip(length, orient, x, y);
+			} else {
+				gameManager.placePlayerShip(length, orient, x, y);
+			}
 			updatePlayerSquares();
 			updateAddShipsCounter();
 
@@ -278,7 +303,11 @@ function updatePlayerSquares() {
 		const x = Number(square.getAttribute("data-x"));
 		const y = Number(square.getAttribute("data-y"));
 
-		if (gameManager.getPlayerSquare(x, y) !== null) {
+		const playerSquare = gameManager.isPlayerAddTurn
+			? gameManager.getPlayerSquare(x, y)
+			: gameManager.getSecondPlayerSquare(x, y);
+
+		if (playerSquare !== null) {
 			square.classList.add("ship");
 			square.setAttribute("data-ship", "true");
 		} else {
@@ -290,7 +319,10 @@ function updatePlayerSquares() {
 
 function updateAddShipsCounter() {
 	const counter = document.getElementById("add-ships-left");
-	const shipsLeft = gameManager.numShips - gameManager.playerShipsNum;
+	const playerShipsNum = gameManager.isPlayerAddTurn
+		? gameManager.playerShipsNum
+		: gameManager.secondPlayerShipsNum;
+	const shipsLeft = gameManager.numShips - playerShipsNum;
 	counter.textContent = shipsLeft;
 }
 
@@ -366,7 +398,7 @@ function renderAddShips() {
                         </div>
                     </div>
                     <div id="ship-menu-buttons" class="flex justify-center gap-4">
-                        <button id="ship-menu-start" class="bg-green-800 rounded-full px-4 py-2 hover:bg-green-700 border cursor-pointer text-sm xl:text-base" id="start-match">Start Game</button>
+                        <button id="ship-menu-start" class="bg-green-800 rounded-full px-4 py-2 hover:bg-green-700 border cursor-pointer text-sm xl:text-base" id="start-match">Confirm Ships</button>
                         <button id="ship-menu-randomize" class="bg-indigo-800 rounded-full px-4 py-2 hover:bg-indigo-700 border cursor-pointer text-sm xl:text-base" id="randomize-ships">Randomize Ships</button>
                         <button id="ship-menu-reset" class="bg-red-800 rounded-full px-4 py-2 hover:bg-red-700 border cursor-pointer text-sm xl:text-base" id="reset-board">Reset Board</button>
                     </div>
@@ -411,15 +443,33 @@ function addRotateButtonsHandlers() {
 }
 
 function startGame() {
-	if (gameManager.playerShipsNum < gameManager.numShips) {
-		const missingShips = gameManager.numShips - gameManager.playerShipsNum;
+	const playerShipsNum = gameManager.isPlayerAddTurn
+		? gameManager.playerShipsNum
+		: gameManager.secondPlayerShipsNum;
+	if (playerShipsNum < gameManager.numShips) {
+		const missingShips = gameManager.numShips - playerShipsNum;
 		renderAddShipsWarnMessage(missingShips);
 		timeoutID = setTimeout(() => {
-			renderAddShipsMessage();
+			if (gameManager.isPlayerAddTurn) {
+				renderAddShipsMessage(gameManager.playerName);
+			} else {
+				renderAddShipsMessage(gameManager.secondPlayerName);
+			}
 		}, 3000);
 		return;
 	}
 	removeAddShips();
+	if (!gameManager.isComputerGame && gameManager.isPlayerAddTurn) {
+		gameManager.isPlayerAddTurn = false;
+		renderAddShips();
+		dragAndDropShips();
+		addShipMenuHandlers();
+		updateAddShipsCounter();
+		renderAddShipsMessage(gameManager.secondPlayerName);
+		removePlayerBoard();
+		renderPlayerBoard(gameManager.boardSize);
+		return;
+	}
 	renderEnemyBoard(gameManager.boardSize);
 	addEnemySquaresHandlers();
 	renderPlayerTurnMessage();
@@ -463,8 +513,8 @@ function addShipMenuHandlers() {
 	addResetBoardHandler();
 }
 
-function renderAddShipsMessage() {
-	gameStateMessage.textContent = "Add your ships";
+function renderAddShipsMessage(playerName) {
+	gameStateMessage.textContent = `Add ${playerName}'s ships`;
 }
 
 function addEnemySquaresHandlers() {
@@ -645,7 +695,7 @@ function renderGameOver() {
 		gameStateMessage.classList.remove("text-slate-200");
 		gameStateMessage.classList.add("text-green-500");
 		gameStateMessage.innerHTML = gameOverMessage + "<br>You have won!";
-	} else if (winner === gameManager.compPlayer) {
+	} else if (winner === gameManager.secondPlayer) {
 		gameStateMessage.classList.remove("text-slate-200");
 		gameStateMessage.classList.add("text-red-500");
 		gameStateMessage.innerHTML =

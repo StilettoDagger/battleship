@@ -5,7 +5,7 @@ import Ship from "../modules/ship.js";
 describe("Game manager tests", () => {
 	let gameManager;
 	beforeAll(() => {
-		gameManager = new GameManager(10, 5, 7);
+		gameManager = new GameManager(10, 5, 7, true);
 	});
 	test("GameManger class should exist", () => {
 		expect(GameManager).toBeDefined();
@@ -13,7 +13,7 @@ describe("Game manager tests", () => {
 	});
 	test("GameManager should include properties for player one and player two", () => {
 		expect(gameManager).toHaveProperty("player");
-		expect(gameManager).toHaveProperty("compPlayer");
+		expect(gameManager).toHaveProperty("secondPlayer");
 	});
 	test("GameManager should include a method for initializing players", () => {
 		expect(gameManager.initializePlayers).toBeDefined();
@@ -23,8 +23,8 @@ describe("Game manager tests", () => {
 		gameManager.initializePlayers("stiletto");
 		expect(gameManager.player).toEqual(expect.any(Player));
 		expect(gameManager.player.name).toBe("stiletto");
-		expect(gameManager.compPlayer).toEqual(expect.any(ComputerPlayer));
-		expect(gameManager.compPlayer.name).toBe("computer");
+		expect(gameManager.secondPlayer).toEqual(expect.any(ComputerPlayer));
+		expect(gameManager.secondPlayer.name).toBe("computer");
 	});
 	test("GameManager should include a method to place a player's ship", () => {
 		expect(gameManager.placePlayerShip).toBeDefined();
@@ -42,7 +42,7 @@ describe("Game manager tests", () => {
 	});
 
 	test("makeAttackMove should return an object if the attack was successful or null if it was invalid", () => {
-		gameManager.compPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
+		gameManager.secondPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
 		const att = gameManager.makePlayerMove(3, 3);
 		expect(att.ship).toEqual(expect.any(Ship));
 
@@ -53,7 +53,7 @@ describe("Game manager tests", () => {
 		expect(att3.ship).toBeNull();
 	});
 	test("missedAttacks should be accurate for each player", () => {
-		expect(gameManager.compPlayer.missedAttacks).toBe(0);
+		expect(gameManager.secondPlayer.missedAttacks).toBe(0);
 		expect(gameManager.player.missedAttacks).toBe(1);
 	});
 	test("GameManager should include a method for making a computer move", () => {
@@ -68,7 +68,7 @@ describe("Game manager tests", () => {
 		expect(gameManager.initializeComputerShips).toBeDefined();
 		expect(gameManager.initializeComputerShips).toBeInstanceOf(Function);
 		gameManager.initializeComputerShips();
-		expect(gameManager.compPlayer.gameBoard.ships).toHaveLength(5);
+		expect(gameManager.secondPlayer.gameBoard.ships).toHaveLength(5);
 	});
 	test("GameManager should have a method to reset player's board and remove all ships", () => {
 		expect(gameManager.resetPlayerBoard).toBeDefined();
@@ -84,18 +84,18 @@ describe("Game manager tests", () => {
 	});
 	test("GameManager should have stat properties for both players for missed attacks and downed ships", () => {
 		gameManager.resetPlayerBoard();
-		gameManager.resetComputerBoard();
+		gameManager.resetSecondPlayerBoard();
 
 		gameManager.placePlayerShip(3, "horizontal", 0, 0);
-		gameManager.compPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
+		gameManager.secondPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
 
 		gameManager.makePlayerMove(0, 0);
 		gameManager.makePlayerMove(2, 2);
 		gameManager.makePlayerMove(2, 3);
 
-		gameManager.compPlayer.attack(gameManager.player, 2, 2);
-		gameManager.compPlayer.attack(gameManager.player, 2, 3);
-		gameManager.compPlayer.attack(gameManager.player, 0, 0);
+		gameManager.secondPlayer.attack(gameManager.player, 2, 2);
+		gameManager.secondPlayer.attack(gameManager.player, 2, 3);
+		gameManager.secondPlayer.attack(gameManager.player, 0, 0);
 
 		expect(gameManager.playerMissedAttacks).toBe(1);
 		expect(gameManager.playerDestroyedShips).toBe(1);
@@ -115,14 +115,14 @@ describe("Game manager tests", () => {
 	});
 	test("GameManager should be able to retrieve player and enemy score", () => {
 		gameManager.resetPlayerBoard();
-		gameManager.resetComputerBoard();
+		gameManager.resetSecondPlayerBoard();
 
 		gameManager.placePlayerShip(3, "horizontal", 0, 0);
-		gameManager.compPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
+		gameManager.secondPlayer.gameBoard.placeShip(2, "vertical", 2, 2);
 
-		gameManager.compPlayer.attack(gameManager.player, 0, 0);
-		gameManager.compPlayer.attack(gameManager.player, 0, 1);
-		gameManager.compPlayer.attack(gameManager.player, 1, 0);
+		gameManager.secondPlayer.attack(gameManager.player, 0, 0);
+		gameManager.secondPlayer.attack(gameManager.player, 0, 1);
+		gameManager.secondPlayer.attack(gameManager.player, 1, 0);
 
 		gameManager.makePlayerMove(2, 2);
 		gameManager.makePlayerMove(2, 3);
