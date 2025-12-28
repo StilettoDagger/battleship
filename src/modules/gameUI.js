@@ -7,6 +7,7 @@ let gameManager = null;
 let timeoutID;
 const gameStateMessage = document.getElementById("game-state-message");
 const gameSettingsForm = document.getElementById("game-settings");
+let isMoving = false;
 
 function renderPlayerBoard(boardSize) {
 	const playerBoard = document.getElementById("player-board");
@@ -48,9 +49,10 @@ function renderPlayerBoard(boardSize) {
 
 	const playerName = document.getElementById("player-current-name");
 
-	playerName.textContent = gameManager.isPlayerAddTurn
-		? gameManager.playerName
-		: gameManager.secondPlayerName;
+	playerName.textContent =
+		gameManager.isPlayerAddTurn || gameManager.isPlayerTurn
+			? gameManager.playerName
+			: gameManager.secondPlayerName;
 }
 
 function renderEnemyBoard(boardSize) {
@@ -117,6 +119,11 @@ function renderEnemyBoard(boardSize) {
 			enemyBoard.appendChild(enemySquare);
 		}
 	}
+
+	const enemyName = document.getElementById("enemy-name");
+	enemyName.textContent = gameManager.isPlayerTurn
+		? gameManager.secondPlayerName
+		: gameManager.playerName;
 }
 
 // Get user info and game settings, then start the game plan
@@ -303,9 +310,20 @@ function updatePlayerSquares() {
 		const x = Number(square.getAttribute("data-x"));
 		const y = Number(square.getAttribute("data-y"));
 
-		const playerSquare = gameManager.isPlayerAddTurn
-			? gameManager.getPlayerSquare(x, y)
-			: gameManager.getSecondPlayerSquare(x, y);
+		const playerSquare =
+			gameManager.isPlayerAddTurn || gameManager.isPlayerTurn
+				? gameManager.getPlayerSquare(x, y)
+				: gameManager.getSecondPlayerSquare(x, y);
+
+		const playerSquareState = gameManager.isPlayerTurn
+			? gameManager.getPlayerSquareState(x, y)
+			: gameManager.getSecondPlayerSquareState(x, y);
+
+		if (playerSquareState === "hit") {
+			square.classList.add("hit");
+		} else if (playerSquareState === "noHit") {
+			square.classList.add("miss");
+		}
 
 		if (playerSquare !== null) {
 			square.classList.add("ship");
@@ -313,6 +331,25 @@ function updatePlayerSquares() {
 		} else {
 			square.classList.remove("ship");
 			square.setAttribute("data-ship", "false");
+		}
+	});
+}
+
+function updateSecondPlayerSquares() {
+	const playerSquares = document.querySelectorAll(".enemy-square");
+
+	playerSquares.forEach((square) => {
+		const x = Number(square.getAttribute("data-x"));
+		const y = Number(square.getAttribute("data-y"));
+
+		const playerSquareState = gameManager.isPlayerTurn
+			? gameManager.getSecondPlayerSquareState(x, y)
+			: gameManager.getPlayerSquareState(x, y);
+
+		if (playerSquareState === "hit") {
+			square.classList.add("hit");
+		} else if (playerSquareState === "noHit") {
+			square.classList.add("miss");
 		}
 	});
 }
@@ -470,9 +507,8 @@ function startGame() {
 		renderPlayerBoard(gameManager.boardSize);
 		return;
 	}
-	renderEnemyBoard(gameManager.boardSize);
-	addEnemySquaresHandlers();
-	renderPlayerTurnMessage();
+	gameManager.isPlayerTurn = true;
+	startPlayerTurn();
 }
 
 function renderAddShipsWarnMessage(missingShips) {
@@ -522,18 +558,28 @@ function addEnemySquaresHandlers() {
 
 	enemySquares.forEach((square) => {
 		square.addEventListener("click", () => {
-			if (!gameManager.isPlayerTurn) return;
+			if (isMoving) return;
 
 			const x = Number(square.getAttribute("data-x"));
 			const y = Number(square.getAttribute("data-y"));
 
-			const att = gameManager.makePlayerMove(x, y);
+			let att;
+
+			if (gameManager.isPlayerTurn) {
+				att = gameManager.makePlayerMove(x, y);
+			} else {
+				att = gameManager.makeSecondPlayerMove(x, y);
+			}
 
 			if (att === null) {
 				return;
 			}
 
-			gameManager.isPlayerTurn = false;
+			updateStats();
+
+			gameManager.isPlayerTurn = !gameManager.isPlayerTurn;
+
+			isMoving = true;
 
 			if (att.ship) {
 				markShipHitSquare(square);
@@ -542,13 +588,18 @@ function addEnemySquaresHandlers() {
 				markEmptySquare(square);
 				renderPlayerMissMessage(att);
 			}
-			updateStats();
+
 			timeoutID = setTimeout(() => {
 				if (gameManager.isGameOver) {
 					renderGameOver();
 					return;
 				}
-				startComputerTurn();
+				if (gameManager.isComputerGame) {
+					startComputerTurn();
+				} else {
+					startPlayerTurn();
+				}
+				isMoving = false;
 			}, 3000);
 		});
 	});
@@ -610,8 +661,8 @@ function renderPlayerTurnMessage() {
 	const opponentName = document.getElementById("enemy-name");
 	playerName.classList.add("current");
 	opponentName.classList.remove("current");
-	gameStateMessage.innerHTML =
-		"It's your turn<br>Make a move on the opponent's board";
+	const name = playerName.textContent;
+	gameStateMessage.textContent = `It's ${name}'s turn\nPlease make a move.`;
 }
 
 function renderEnemyTurnMessage() {
@@ -619,8 +670,8 @@ function renderEnemyTurnMessage() {
 	const opponentName = document.getElementById("enemy-name");
 	playerName.classList.remove("current");
 	opponentName.classList.add("current");
-	gameStateMessage.innerHTML =
-		"It's your opponent's turn<br>Wait for your opponent to make a move";
+	gameStateMessage.textContent =
+		"It's the computer's turn\nWait for the computer to make a move.";
 }
 
 function getBoardCoordinate(attack) {
@@ -652,23 +703,42 @@ function renderEnemyMissMessage(attack) {
 }
 
 function updateStats() {
-	const playerDestroyedShips = document.getElementById("player-downed-ships");
+	let playerDestroyedShips;
+	let playerMissedAttacks;
+	let playerScore;
+	let secondPlayerDestroyedShips;
+	let secondPlayerMissedAttacks;
+	let secondPlayerScore;
+
+	if (gameManager.isPlayerTurn || gameManager.isComputerGame) {
+		playerDestroyedShips = document.getElementById("player-downed-ships");
+		playerMissedAttacks = document.getElementById("player-missed-attacks");
+		playerScore = document.getElementById("player-score-num");
+		secondPlayerDestroyedShips = document.getElementById("enemy-downed-ships");
+		secondPlayerMissedAttacks = document.getElementById("enemy-missed-attacks");
+		secondPlayerScore = document.getElementById("enemy-score-num");
+	} else {
+		playerDestroyedShips = document.getElementById("enemy-downed-ships");
+		playerMissedAttacks = document.getElementById("enemy-missed-attacks");
+		playerScore = document.getElementById("enemy-score-num");
+		secondPlayerDestroyedShips = document.getElementById("player-downed-ships");
+		secondPlayerMissedAttacks = document.getElementById(
+			"player-missed-attacks"
+		);
+		secondPlayerScore = document.getElementById("player-score-num");
+	}
 	playerDestroyedShips.textContent = gameManager.playerDestroyedShips;
 
-	const playerMissedAttacks = document.getElementById("player-missed-attacks");
 	playerMissedAttacks.textContent = gameManager.playerMissedAttacks;
 
-	const playerScore = document.getElementById("player-score-num");
 	playerScore.textContent = gameManager.playerScore;
 
-	const enemyDestroyedShips = document.getElementById("enemy-downed-ships");
-	enemyDestroyedShips.textContent = gameManager.enemyDestroyedShips;
+	secondPlayerDestroyedShips.textContent =
+		gameManager.secondPlayerDestroyedShips;
 
-	const enemyMissedAttacks = document.getElementById("enemy-missed-attacks");
-	enemyMissedAttacks.textContent = gameManager.enemyMissedAttacks;
+	secondPlayerMissedAttacks.textContent = gameManager.secondPlayerMissedAttacks;
 
-	const enemyScore = document.getElementById("enemy-score-num");
-	enemyScore.textContent = gameManager.enemyScore;
+	secondPlayerScore.textContent = gameManager.secondPlayerScore;
 }
 
 function resetPlayerStats() {
@@ -694,13 +764,30 @@ function renderGameOver() {
 	if (winner === gameManager.player) {
 		gameStateMessage.classList.remove("text-slate-200");
 		gameStateMessage.classList.add("text-green-500");
-		gameStateMessage.innerHTML = gameOverMessage + "<br>You have won!";
+		const playerMessage = gameManager.isComputerGame
+			? "You have won!"
+			: `${gameManager.playerName} has won!`;
+		gameStateMessage.textContent = `${gameOverMessage}\n${playerMessage}`;
 	} else if (winner === gameManager.secondPlayer) {
 		gameStateMessage.classList.remove("text-slate-200");
 		gameStateMessage.classList.add("text-red-500");
-		gameStateMessage.innerHTML =
-			gameOverMessage + "<br>You have lost. Better luck next time!";
+		const playerMessage = gameManager.isComputerGame
+			? "You have lost. Better luck next time!"
+			: `${gameManager.secondPlayerName} has won!`;
+		gameStateMessage.textContent = `${gameOverMessage}\n${playerMessage}`;
 	} else {
-		gameStateMessage.innerHTML = gameOverMessage + "<br>It's a tie!";
+		gameStateMessage.textContent = `${gameOverMessage}\nIt's a tie!`;
 	}
+}
+
+function startPlayerTurn() {
+	removePlayerBoard();
+	renderPlayerBoard(gameManager.boardSize);
+	updatePlayerSquares();
+	removeEnemyDiv();
+	renderEnemyBoard(gameManager.boardSize);
+	updateSecondPlayerSquares();
+	addEnemySquaresHandlers();
+	renderPlayerTurnMessage();
+	updateStats();
 }

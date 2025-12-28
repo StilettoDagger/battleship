@@ -24,7 +24,7 @@ describe("Game manager tests", () => {
 		expect(gameManager.player).toEqual(expect.any(Player));
 		expect(gameManager.player.name).toBe("stiletto");
 		expect(gameManager.secondPlayer).toEqual(expect.any(ComputerPlayer));
-		expect(gameManager.secondPlayer.name).toBe("computer");
+		expect(gameManager.secondPlayer.name).toBe("Computer");
 	});
 	test("GameManager should include a method to place a player's ship", () => {
 		expect(gameManager.placePlayerShip).toBeDefined();
@@ -100,11 +100,11 @@ describe("Game manager tests", () => {
 		expect(gameManager.playerMissedAttacks).toBe(1);
 		expect(gameManager.playerDestroyedShips).toBe(1);
 
-		expect(gameManager.enemyMissedAttacks).toBe(2);
-		expect(gameManager.enemyDestroyedShips).toBe(0);
+		expect(gameManager.secondPlayerMissedAttacks).toBe(2);
+		expect(gameManager.secondPlayerDestroyedShips).toBe(0);
 	});
 	test("GameManger should have a boolean property for the player's turn", () => {
-		expect(gameManager.isPlayerTurn).toBe(true);
+		expect(gameManager.isPlayerTurn).toBe(false);
 	});
 	test("GameManager should have a game over flag property", () => {
 		expect(gameManager.isGameOver).toBeDefined;
@@ -128,6 +128,6 @@ describe("Game manager tests", () => {
 		gameManager.makePlayerMove(2, 3);
 
 		expect(gameManager.playerScore).toBe(7);
-		expect(gameManager.enemyScore).toBe(2);
+		expect(gameManager.secondPlayerScore).toBe(2);
 	});
 });

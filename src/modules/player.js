@@ -77,6 +77,6 @@ export class Player {
 
 export class ComputerPlayer extends Player {
 	constructor(boardSize) {
-		super("computer", boardSize);
+		super("Computer", boardSize);
 	}
 }

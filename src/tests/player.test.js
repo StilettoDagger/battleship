@@ -21,7 +21,7 @@ describe("Player tests", () => {
 		expect(Object.prototype.isPrototypeOf.call(Player, ComputerPlayer)).toBe(
 			true
 		);
-		expect(compPlayer.name).toBe("computer");
+		expect(compPlayer.name).toBe("Computer");
 	});
 	test("Each player should contain their own gameboard", () => {
 		expect(realPlayer.gameBoard).toBeDefined();

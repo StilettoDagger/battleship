@@ -15,7 +15,7 @@ export default class GameManager {
 		this.player = null;
 		this.secondPlayer = null;
 		this.#maxMissed = maxMissed;
-		this.isPlayerTurn = true;
+		this.isPlayerTurn = false;
 		this.#isGameOver = false;
 		this.#isComputerGame = isComputerGame;
 		this.isPlayerAddTurn = true;
@@ -83,6 +83,25 @@ export default class GameManager {
 		return att;
 	}
 
+	makeSecondPlayerMove(x, y) {
+		const att = this.secondPlayer.attack(this.player, x, y);
+		if (
+			this.#checkGameOver(this.player) ||
+			this.secondPlayerMissedAttacks >= this.#maxMissed
+		) {
+			this.#isGameOver = true;
+		}
+		return att;
+	}
+
+	getPlayerSquareState(x, y) {
+		return this.secondPlayer.attacks[y][x];
+	}
+
+	getSecondPlayerSquareState(x, y) {
+		return this.player.attacks[y][x];
+	}
+
 	resetPlayerBoard() {
 		if (this.isPlayerAddTurn) {
 			this.player.resetBoard();
@@ -135,7 +154,7 @@ export default class GameManager {
 		);
 		if (
 			this.#checkGameOver(this.secondPlayer) ||
-			this.enemyMissedAttacks >= this.#maxMissed
+			this.secondPlayerMissedAttacks >= this.#maxMissed
 		) {
 			this.#isGameOver = true;
 		}
@@ -143,9 +162,9 @@ export default class GameManager {
 	}
 
 	determineWinner() {
-		if (this.playerScore > this.enemyScore) {
+		if (this.playerScore > this.secondPlayerScore) {
 			return this.player;
-		} else if (this.enemyScore > this.playerScore) {
+		} else if (this.secondPlayerScore > this.playerScore) {
 			return this.secondPlayer;
 		} else {
 			return null;
@@ -188,7 +207,7 @@ export default class GameManager {
 		return this.player.missedAttacks;
 	}
 
-	get enemyMissedAttacks() {
+	get secondPlayerMissedAttacks() {
 		return this.secondPlayer.missedAttacks;
 	}
 
@@ -196,7 +215,7 @@ export default class GameManager {
 		return this.player.shipsDestroyed;
 	}
 
-	get enemyDestroyedShips() {
+	get secondPlayerDestroyedShips() {
 		return this.secondPlayer.shipsDestroyed;
 	}
 
@@ -204,7 +223,7 @@ export default class GameManager {
 		return this.player.score;
 	}
 
-	get enemyScore() {
+	get secondPlayerScore() {
 		return this.secondPlayer.score;
 	}
 
