@@ -118,7 +118,8 @@ export default class GameManager {
 		this.resetPlayerBoard();
 		this.resetSecondPlayerBoard();
 		this.#isGameOver = false;
-		this.isPlayerTurn = true;
+		this.isPlayerTurn = false;
+		this.isPlayerAddTurn = true;
 	}
 
 	randomizePlayerShips() {
