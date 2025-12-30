@@ -1,7 +1,6 @@
 import { Player, ComputerPlayer } from "./player.js";
 
-// TODO: implement two player game system
-// TODO: fix ui to be compatible with two player games
+// TODO: improve computer AI and attack patterns
 
 export default class GameManager {
 	#boardSize;
@@ -135,24 +134,7 @@ export default class GameManager {
 	}
 
 	makeComputerMove() {
-		const validMoves = [];
-		for (let x = 0; x < this.#boardSize; x++) {
-			for (let y = 0; y < this.#boardSize; y++) {
-				if (this.secondPlayer.checkValidAttackSquare(x, y)) {
-					validMoves.push({ x, y });
-				}
-			}
-		}
-		if (validMoves.length === 0) {
-			return null;
-		}
-		const randomMove =
-			validMoves[Math.floor(Math.random() * validMoves.length)];
-		const att = this.secondPlayer.attack(
-			this.player,
-			randomMove.x,
-			randomMove.y
-		);
+		const att = this.secondPlayer.attack(this.player);
 		if (
 			this.#checkGameOver(this.secondPlayer) ||
 			this.secondPlayerMissedAttacks >= this.#maxMissed

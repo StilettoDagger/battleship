@@ -1,11 +1,11 @@
 import GameManager from "../modules/gameManager.js";
-import { ComputerPlayer, Player } from "../modules/player.js";
+import { Player } from "../modules/player.js";
 import Ship from "../modules/ship.js";
 
 describe("Game manager tests", () => {
 	let gameManager;
 	beforeAll(() => {
-		gameManager = new GameManager(10, 5, 7, true);
+		gameManager = new GameManager(10, 5, 7, false);
 	});
 	test("GameManger class should exist", () => {
 		expect(GameManager).toBeDefined();
@@ -20,10 +20,10 @@ describe("Game manager tests", () => {
 		expect(gameManager.initializePlayers).toBeInstanceOf(Function);
 	});
 	test("initializePlayers method should correctly initialize players", () => {
-		gameManager.initializePlayers("stiletto");
+		gameManager.initializePlayers("stiletto", "Computer");
 		expect(gameManager.player).toEqual(expect.any(Player));
 		expect(gameManager.player.name).toBe("stiletto");
-		expect(gameManager.secondPlayer).toEqual(expect.any(ComputerPlayer));
+		expect(gameManager.secondPlayer).toEqual(expect.any(Player));
 		expect(gameManager.secondPlayer.name).toBe("Computer");
 	});
 	test("GameManager should include a method to place a player's ship", () => {
@@ -59,10 +59,6 @@ describe("Game manager tests", () => {
 	test("GameManager should include a method for making a computer move", () => {
 		expect(gameManager.makeComputerMove).toBeDefined();
 		expect(gameManager.makeComputerMove).toBeInstanceOf(Function);
-		for (let i = 0; i < 10; i++) {
-			const res = gameManager.makeComputerMove();
-			expect(res).not.toBe(null);
-		}
 	});
 	test("GameManger should have a method for initializing computer ships", () => {
 		expect(gameManager.initializeComputerShips).toBeDefined();

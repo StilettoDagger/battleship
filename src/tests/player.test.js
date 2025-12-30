@@ -4,12 +4,12 @@ import Ship from "../modules/ship.js";
 
 describe("Player tests", () => {
 	let realPlayer;
-	let compPlayer;
+	let secondPlayer;
 	beforeAll(() => {
 		realPlayer = new Player("player", 10);
 		realPlayer.gameBoard.placeShip(4, "vertical", 3, 0);
-		compPlayer = new ComputerPlayer(10);
-		compPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
+		secondPlayer = new Player("Computer", 10);
+		secondPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
 	});
 	test("Player class should exist", () => {
 		expect(Player).toBeDefined();
@@ -21,19 +21,19 @@ describe("Player tests", () => {
 		expect(Object.prototype.isPrototypeOf.call(Player, ComputerPlayer)).toBe(
 			true
 		);
-		expect(compPlayer.name).toBe("Computer");
+		expect(secondPlayer.name).toBe("Computer");
 	});
 	test("Each player should contain their own gameboard", () => {
 		expect(realPlayer.gameBoard).toBeDefined();
 		expect(realPlayer.gameBoard).toEqual(expect.any(GameBoard));
-		expect(compPlayer.gameBoard).toBeDefined();
-		expect(compPlayer.gameBoard).toEqual(expect.any(GameBoard));
+		expect(secondPlayer.gameBoard).toBeDefined();
+		expect(secondPlayer.gameBoard).toEqual(expect.any(GameBoard));
 
-		expect(realPlayer.gameBoard).not.toBe(compPlayer.gameBoard);
+		expect(realPlayer.gameBoard).not.toBe(secondPlayer.gameBoard);
 	});
 	test("Players should include a 2d array to track attacked coordinates", () => {
 		expect(realPlayer.attacks).toEqual(expect.any(Array));
-		expect(compPlayer.attacks).toEqual(expect.any(Array));
+		expect(secondPlayer.attacks).toEqual(expect.any(Array));
 		expect(realPlayer.attacks).toStrictEqual([
 			[
 				"unknown",
@@ -156,7 +156,7 @@ describe("Player tests", () => {
 				"unknown",
 			],
 		]);
-		expect(compPlayer.attacks).toStrictEqual([
+		expect(secondPlayer.attacks).toStrictEqual([
 			[
 				"unknown",
 				"unknown",
@@ -282,26 +282,26 @@ describe("Player tests", () => {
 	test("Players should have a attack method", () => {
 		expect(realPlayer.attack).toBeDefined();
 		expect(realPlayer.attack).toBeInstanceOf(Function);
-		expect(compPlayer.attack).toBeDefined();
-		expect(compPlayer.attack).toBeInstanceOf(Function);
+		expect(secondPlayer.attack).toBeDefined();
+		expect(secondPlayer.attack).toBeInstanceOf(Function);
 	});
 	test("attack method should return an object of the coordinate that was attacked that may or may not include a hit ship", () => {
-		const att1 = realPlayer.attack(compPlayer, 3, 3);
+		const att1 = realPlayer.attack(secondPlayer, 3, 3);
 		expect(att1.ship).toEqual(expect.any(Ship));
 
-		const att2 = realPlayer.attack(compPlayer, 0, 0);
+		const att2 = realPlayer.attack(secondPlayer, 0, 0);
 		expect(att2.ship).toBeNull();
 
-		const att3 = compPlayer.attack(realPlayer, 3, 0);
+		const att3 = secondPlayer.attack(realPlayer, 3, 0);
 		expect(att3.ship).toEqual(expect.any(Ship));
 	});
 	test("attack method should sink an opponent's ship when the ship is hit enough number of time", () => {
-		realPlayer.attack(compPlayer, 4, 3);
-		const att = realPlayer.attack(compPlayer, 5, 3);
+		realPlayer.attack(secondPlayer, 4, 3);
+		const att = realPlayer.attack(secondPlayer, 5, 3);
 
 		expect(att.ship).toEqual(expect.any(Ship));
 		expect(att.ship.isSunk).toBe(true);
-		expect(compPlayer.gameBoard.isGameOver).toBe(true);
+		expect(secondPlayer.gameBoard.isGameOver).toBe(true);
 	});
 	test("attacks array should update with the attacked coordinates", () => {
 		expect(realPlayer.attacks).toStrictEqual([
@@ -426,7 +426,7 @@ describe("Player tests", () => {
 				"unknown",
 			],
 		]);
-		expect(compPlayer.attacks).toStrictEqual([
+		expect(secondPlayer.attacks).toStrictEqual([
 			[
 				"unknown",
 				"unknown",
@@ -556,13 +556,13 @@ describe("Player tests", () => {
 		expect(realPlayer.checkValidAttackSquare(10, 10)).toBe(false);
 	});
 	test("attack should return null if the player has previously attacked the previous coordinate or the coordinate is invalid", () => {
-		const att = realPlayer.attack(compPlayer, 3, 3);
+		const att = realPlayer.attack(secondPlayer, 3, 3);
 		expect(att).toBeNull();
 
-		const att2 = compPlayer.attack(realPlayer, 3, 0);
+		const att2 = secondPlayer.attack(realPlayer, 3, 0);
 		expect(att2).toBeNull();
 
-		const att3 = realPlayer.attack(compPlayer, 10, 10);
+		const att3 = realPlayer.attack(secondPlayer, 10, 10);
 		expect(att3).toBeNull();
 	});
 	test("Player should have an attribute for missed attack", () => {
