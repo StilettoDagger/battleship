@@ -1,8 +1,6 @@
 import GameManager from "./gameManager";
 import interact from "interactjs";
 
-// TODO: implement two player game system and implement its UI
-
 let gameManager = null;
 let timeoutID;
 const gameStateMessage = document.getElementById("game-state-message");

@@ -1,7 +1,5 @@
 import { Player, ComputerPlayer } from "./player.js";
 
-// TODO: improve computer AI and attack patterns
-
 export default class GameManager {
 	#boardSize;
 	#numShips;

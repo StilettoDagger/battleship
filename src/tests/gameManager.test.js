@@ -2,6 +2,8 @@ import GameManager from "../modules/gameManager.js";
 import { Player } from "../modules/player.js";
 import Ship from "../modules/ship.js";
 
+// TODO: enhance unit tests
+
 describe("Game manager tests", () => {
 	let gameManager;
 	beforeAll(() => {

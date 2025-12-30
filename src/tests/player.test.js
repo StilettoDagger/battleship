@@ -2,6 +2,8 @@ import GameBoard from "../modules/gameboard.js";
 import { Player, ComputerPlayer } from "../modules/player.js";
 import Ship from "../modules/ship.js";
 
+// TODO: enhance unit tests.
+
 describe("Player tests", () => {
 	let realPlayer;
 	let secondPlayer;
