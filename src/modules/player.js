@@ -1,4 +1,5 @@
 import GameBoard from "./gameboard.js";
+import Queue from "./queue.js";
 
 export class Player {
 	#boardSize;
@@ -76,7 +77,64 @@ export class Player {
 }
 
 export class ComputerPlayer extends Player {
+	#boardSize;
 	constructor(boardSize) {
 		super("Computer", boardSize);
+		this.attacksQueue = new Queue();
+		this.#boardSize = boardSize;
+	}
+
+	attack(player) {
+		let move;
+
+		// If there are no attacks in queue select a random square to attack
+		if (this.attacksQueue.isEmpty()) {
+			const validMoves = [];
+			for (let x = 0; x < this.#boardSize; x++) {
+				for (let y = 0; y < this.#boardSize; y++) {
+					if (this.checkValidAttackSquare(x, y)) {
+						validMoves.push({ x, y });
+					}
+				}
+			}
+			move =
+				validMoves.length > 0
+					? validMoves[Math.floor(Math.random() * validMoves.length)]
+					: null;
+		} else {
+			move = this.attacksQueue.dequeue();
+		}
+
+		if (move === null) return null;
+
+		const res = super.attack(player, move.x, move.y);
+
+		if (res.ship !== null) {
+			const adjSquares = this.#getAdjacentSquares(res.x, res.y);
+
+			for (const square of adjSquares) {
+				this.attacksQueue.enqueue(square);
+			}
+		}
+
+		if (res.ship && res.ship.isSunk) {
+			this.attacksQueue.clear();
+		}
+
+		return res;
+	}
+
+	#getAdjacentSquares(x, y) {
+		const squares = [];
+
+		if (this.checkValidAttackSquare(x - 1, y)) squares.push({ x: x - 1, y });
+
+		if (this.checkValidAttackSquare(x, y - 1)) squares.push({ x, y: y - 1 });
+
+		if (this.checkValidAttackSquare(x + 1, y)) squares.push({ x: x + 1, y });
+
+		if (this.checkValidAttackSquare(x, y + 1)) squares.push({ x, y: y + 1 });
+
+		return squares;
 	}
 }
