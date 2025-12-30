@@ -228,6 +228,8 @@ function addMenuButtonHandler() {
 		removeEnemyDiv();
 		hideHeaderButtons();
 		resetPlayerStats();
+		isMoving = false;
+		resetGameState();
 	});
 }
 
@@ -245,6 +247,8 @@ function addRestartButtonHandler() {
 		addShipMenuHandlers();
 		updateAddShipsCounter();
 		resetPlayerStats();
+		isMoving = false;
+		resetGameState();
 	});
 }
 
@@ -598,8 +602,8 @@ function addEnemySquaresHandlers() {
 					startComputerTurn();
 				} else {
 					startPlayerTurn();
+					isMoving = false;
 				}
-				isMoving = false;
 			}, 3000);
 		});
 	});
@@ -645,6 +649,7 @@ async function startComputerTurn() {
 		}
 		renderPlayerTurnMessage();
 		gameManager.isPlayerTurn = true;
+		isMoving = false;
 	}, 3000);
 }
 
@@ -790,4 +795,9 @@ function startPlayerTurn() {
 	addEnemySquaresHandlers();
 	renderPlayerTurnMessage();
 	updateStats();
+}
+
+function resetGameState() {
+	gameStateMessage.classList.remove("text-green-500", "text-red-500");
+	gameStateMessage.classList.add("text-slate-200");
 }
