@@ -1,10 +1,8 @@
 import GameManager from "../modules/gameManager.js";
-import { Player } from "../modules/player.js";
+import { Player, ComputerPlayer } from "../modules/player.js";
 import Ship from "../modules/ship.js";
 
-// TODO: enhance unit tests
-
-describe("Game manager tests", () => {
+describe("Game manager two player tests", () => {
 	let gameManager;
 	beforeAll(() => {
 		gameManager = new GameManager(10, 5, 7, false);
@@ -22,11 +20,11 @@ describe("Game manager tests", () => {
 		expect(gameManager.initializePlayers).toBeInstanceOf(Function);
 	});
 	test("initializePlayers method should correctly initialize players", () => {
-		gameManager.initializePlayers("stiletto", "Computer");
-		expect(gameManager.player).toEqual(expect.any(Player));
+		gameManager.initializePlayers("stiletto", "player2");
+		expect(gameManager.player).toBeInstanceOf(Player);
 		expect(gameManager.player.name).toBe("stiletto");
-		expect(gameManager.secondPlayer).toEqual(expect.any(Player));
-		expect(gameManager.secondPlayer.name).toBe("Computer");
+		expect(gameManager.secondPlayer).toBeInstanceOf(Player);
+		expect(gameManager.secondPlayer.name).toBe("player2");
 	});
 	test("GameManager should include a method to place a player's ship", () => {
 		expect(gameManager.placePlayerShip).toBeDefined();
@@ -61,12 +59,6 @@ describe("Game manager tests", () => {
 	test("GameManager should include a method for making a computer move", () => {
 		expect(gameManager.makeComputerMove).toBeDefined();
 		expect(gameManager.makeComputerMove).toBeInstanceOf(Function);
-	});
-	test("GameManger should have a method for initializing computer ships", () => {
-		expect(gameManager.initializeComputerShips).toBeDefined();
-		expect(gameManager.initializeComputerShips).toBeInstanceOf(Function);
-		gameManager.initializeComputerShips();
-		expect(gameManager.secondPlayer.gameBoard.ships).toHaveLength(5);
 	});
 	test("GameManager should have a method to reset player's board and remove all ships", () => {
 		expect(gameManager.resetPlayerBoard).toBeDefined();
@@ -127,5 +119,48 @@ describe("Game manager tests", () => {
 
 		expect(gameManager.playerScore).toBe(7);
 		expect(gameManager.secondPlayerScore).toBe(2);
+	});
+	test("GameManager should have methods to get the players' square", () => {
+		const playerSquare = gameManager.getPlayerSquare(0, 0);
+		expect(playerSquare).toBeInstanceOf(Ship);
+		expect(playerSquare.numHits).toBe(2);
+
+		const secondPlayerSquare = gameManager.getSecondPlayerSquare(2, 2);
+		expect(secondPlayerSquare).toBeInstanceOf(Ship);
+		expect(secondPlayerSquare.numHits).toBe(2);
+		expect(secondPlayerSquare.isSunk).toBe(true);
+	});
+	test("GameManger should have methods to get the players' square state", () => {
+		const hitPlayerSquare = gameManager.getPlayerSquareState(0, 0);
+		expect(hitPlayerSquare).toBe("hit");
+
+		const missedPlayerSquare = gameManager.getPlayerSquareState(0, 1);
+		expect(missedPlayerSquare).toBe("miss");
+
+		const hitSecondPlayerSquare = gameManager.getSecondPlayerSquareState(2, 2);
+		expect(hitSecondPlayerSquare).toBe("hit");
+	});
+});
+
+describe("Game manager computer game tests", () => {
+	let gameManager;
+	beforeAll(() => {
+		gameManager = new GameManager(10, 5, 7, true);
+		gameManager.initializePlayers("player");
+	});
+	test("Second player should be a computer player.", () => {
+		expect(gameManager.secondPlayer).toBeInstanceOf(ComputerPlayer);
+		expect(gameManager.secondPlayerName).toBe("Computer");
+	});
+	test("GameManger should have a method for initializing the correct number of computer ships", () => {
+		expect(gameManager.initializeComputerShips).toBeDefined();
+		expect(gameManager.initializeComputerShips).toBeInstanceOf(Function);
+		expect(gameManager.secondPlayer.gameBoard.ships).toHaveLength(5);
+	});
+	test("GameManager should have a method to make a computer move.", () => {
+		const res = gameManager.makeComputerMove();
+
+		expect(res).toMatchObject({ x: expect.any(Number), y: expect.any(Number) });
+		expect(res.ship === null || res.ship instanceof Ship).toBe(true);
 	});
 });

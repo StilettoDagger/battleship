@@ -323,7 +323,7 @@ function updatePlayerSquares() {
 
 		if (playerSquareState === "hit") {
 			square.classList.add("hit");
-		} else if (playerSquareState === "noHit") {
+		} else if (playerSquareState === "miss") {
 			square.classList.add("miss");
 		}
 
@@ -350,7 +350,7 @@ function updateSecondPlayerSquares() {
 
 		if (playerSquareState === "hit") {
 			square.classList.add("hit");
-		} else if (playerSquareState === "noHit") {
+		} else if (playerSquareState === "miss") {
 			square.classList.add("miss");
 		}
 	});

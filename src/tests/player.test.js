@@ -2,35 +2,26 @@ import GameBoard from "../modules/gameboard.js";
 import { Player, ComputerPlayer } from "../modules/player.js";
 import Ship from "../modules/ship.js";
 
-// TODO: enhance unit tests.
-
 describe("Player tests", () => {
 	let realPlayer;
 	let secondPlayer;
 	beforeAll(() => {
 		realPlayer = new Player("player", 10);
 		realPlayer.gameBoard.placeShip(4, "vertical", 3, 0);
-		secondPlayer = new Player("Computer", 10);
+		secondPlayer = new Player("player2", 10);
 		secondPlayer.gameBoard.placeShip(3, "horizontal", 3, 3);
 	});
 	test("Player class should exist", () => {
 		expect(Player).toBeDefined();
 		expect(Player).toBeInstanceOf(Object);
 		expect(realPlayer.name).toBe("player");
-	});
-	test("ComputerPlayer class should exist", () => {
-		expect(ComputerPlayer).toBeDefined();
-		expect(Object.prototype.isPrototypeOf.call(Player, ComputerPlayer)).toBe(
-			true
-		);
-		expect(secondPlayer.name).toBe("Computer");
+		expect(secondPlayer.name).toBe("player2");
 	});
 	test("Each player should contain their own gameboard", () => {
 		expect(realPlayer.gameBoard).toBeDefined();
 		expect(realPlayer.gameBoard).toEqual(expect.any(GameBoard));
 		expect(secondPlayer.gameBoard).toBeDefined();
 		expect(secondPlayer.gameBoard).toEqual(expect.any(GameBoard));
-
 		expect(realPlayer.gameBoard).not.toBe(secondPlayer.gameBoard);
 	});
 	test("Players should include a 2d array to track attacked coordinates", () => {
@@ -308,7 +299,7 @@ describe("Player tests", () => {
 	test("attacks array should update with the attacked coordinates", () => {
 		expect(realPlayer.attacks).toStrictEqual([
 			[
-				"noHit",
+				"miss",
 				"unknown",
 				"unknown",
 				"unknown",
@@ -574,5 +565,26 @@ describe("Player tests", () => {
 	test("Player should have a stat for ships destroyed", () => {
 		expect(realPlayer.shipsDestroyed).toBeDefined();
 		expect(realPlayer.shipsDestroyed).toBe(1);
+	});
+});
+
+describe("Computer tests", () => {
+	let player;
+	let computer;
+	beforeAll(() => {
+		player = new Player("player", 10);
+		computer = new ComputerPlayer(10);
+	});
+	test("ComputerPlayer class should exist", () => {
+		expect(ComputerPlayer).toBeDefined();
+		expect(Object.prototype.isPrototypeOf.call(Player, ComputerPlayer)).toBe(
+			true
+		);
+	});
+	test("ComputerPlayer should have a method to attack the player which accepts one argument for the player to attack.", () => {
+		const res = computer.attack(player);
+
+		expect(res).toMatchObject({ x: expect.any(Number), y: expect.any(Number) });
+		expect(res.ship === null || res.ship instanceof Ship).toBe(true);
 	});
 });

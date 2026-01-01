@@ -22,7 +22,7 @@ export class Player {
 		}
 		const playerBoard = player.gameBoard;
 		const res = playerBoard.receiveAttack(x, y);
-		this.attacks[y][x] = res.ship ? "hit" : "noHit";
+		this.attacks[y][x] = res.ship ? "hit" : "miss";
 		if (res.ship === null) {
 			this.#missedAttacks++;
 		} else {
