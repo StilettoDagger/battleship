@@ -26,10 +26,6 @@ export default class GameManager {
 		return this.secondPlayer.gameBoard.getSquare(x, y);
 	}
 
-	getComputerSquare(x, y) {
-		return this.secondPlayer.gameBoard.getSquare(x, y);
-	}
-
 	initializePlayers(playerName, secondPlayerName) {
 		this.initializePlayer(playerName);
 		if (this.#isComputerGame) {
