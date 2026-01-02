@@ -356,6 +356,27 @@ function updateSecondPlayerSquares() {
 	});
 }
 
+function showSecondPlayerSquares() {
+	const playerSquares = document.querySelectorAll(".enemy-square");
+
+	playerSquares.forEach((square) => {
+		const x = Number(square.getAttribute("data-x"));
+		const y = Number(square.getAttribute("data-y"));
+
+		const playerSquare = gameManager.isPlayerTurn
+			? gameManager.getPlayerSquare(x, y)
+			: gameManager.getSecondPlayerSquare(x, y);
+
+		if (playerSquare !== null) {
+			square.classList.add("ship");
+			square.setAttribute("data-ship", "true");
+		} else {
+			square.classList.remove("ship");
+			square.setAttribute("data-ship", "false");
+		}
+	});
+}
+
 function updateAddShipsCounter() {
 	const counter = document.getElementById("add-ships-left");
 	const playerShipsNum = gameManager.isPlayerAddTurn
@@ -437,9 +458,9 @@ function renderAddShips() {
                         </div>
                     </div>
                     <div id="ship-menu-buttons" class="flex justify-center gap-4">
-                        <button id="ship-menu-start" class="bg-green-800 rounded-full px-4 py-2 hover:bg-green-700 border cursor-pointer text-sm xl:text-base" id="start-match">Confirm Ships</button>
-                        <button id="ship-menu-randomize" class="bg-indigo-800 rounded-full px-4 py-2 hover:bg-indigo-700 border cursor-pointer text-sm xl:text-base" id="randomize-ships">Randomize Ships</button>
-                        <button id="ship-menu-reset" class="bg-red-800 rounded-full px-4 py-2 hover:bg-red-700 border cursor-pointer text-sm xl:text-base" id="reset-board">Reset Board</button>
+                        <button id="ship-menu-start" class="bg-green-800 rounded-full px-4 py-2 hover:bg-green-700 transition-colors duration-75 border cursor-pointer text-sm xl:text-base" id="start-match">Confirm Ships</button>
+                        <button id="ship-menu-randomize" class="bg-indigo-800 rounded-full px-4 py-2 hover:bg-indigo-700 transition-colors duration-75 border cursor-pointer text-sm xl:text-base" id="randomize-ships">Randomize Ships</button>
+                        <button id="ship-menu-reset" class="bg-red-800 rounded-full px-4 py-2 hover:bg-red-700 transition-colors duration-75 border cursor-pointer text-sm xl:text-base" id="reset-board">Reset Board</button>
                     </div>
                     `;
 	const playersDiv = document.getElementById("players");
@@ -781,6 +802,7 @@ function renderGameOver() {
 	} else {
 		gameStateMessage.textContent = `${gameOverMessage}\nIt's a tie!`;
 	}
+	showSecondPlayerSquares();
 }
 
 function startPlayerTurn() {
